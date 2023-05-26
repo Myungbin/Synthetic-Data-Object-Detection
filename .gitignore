@@ -166,3 +166,18 @@ data/
 *.pkl
 *.pth
 *.json
+
+.vscode
+.idea
+.DS_Store
+
+# custom
+*.pkl.json
+*.log.json
+docs/modelzoo_statistics.md
+mmdet/.mim
+work_dirs/
+
+# Pytorch
+*.py~
+*.sh~

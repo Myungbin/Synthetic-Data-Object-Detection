@@ -1,15 +1,20 @@
-import pickle
-import pandas as pd
 import glob
+import pickle
+from os.path import join
+import datetime
+
+import pandas as pd
+
+from config import cfg
+
 import warnings
 warnings.filterwarnings(action='ignore')
 
-
-with open(r'C:\MB_Project\project\Competition\VISOL\mmdetection\configs\visol\result0526.pkl', "rb") as f:
+with open(join(cfg.RESULT_PATH, 'result0526.pkl'), "rb") as f:
     data = pickle.load(f)
 
-results = pd.read_csv('./data/sample_submission.csv')
-test_img_paths = sorted(glob.glob('./data/test/*.png'))
+results = pd.read_csv(cfg.SAMPLE_SUBMISSION_PATH)
+test_img_paths = sorted(glob.glob(cfg.TEST_IMAGE))
 
 for idx in range(len(test_img_paths)):
     prediction = data[idx]
@@ -30,6 +35,7 @@ for idx in range(len(test_img_paths)):
                     "point4_x": x1, "point4_y": y2,
                 }, ignore_index=True)
 
-results.to_csv('20230526submit.csv', index=False)
-
+current_time = datetime.datetime.now()
+file_name = current_time.strftime("%Y%m%d%H%M")
+results.to_csv(join(cfg.SUBMISSION_PATH, f'{file_name}submission.csv'), index=False)
 

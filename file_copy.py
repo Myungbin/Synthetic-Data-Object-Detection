@@ -1,3 +1,6 @@
+"""
+앙상블시 오류방지
+"""
 import os
 import shutil
 
