@@ -311,7 +311,7 @@ class EfficientNet(BaseModule):
                 norm_cfg=self.norm_cfg,
                 act_cfg=self.act_cfg))
         self.make_layer()
-        # Avoid building unused layers in mmdetection.
+        # Avoid building archive layers in mmdetection.
         if len(self.layers) < max(self.out_indices) + 1:
             self.layers.append(
                 ConvModule(
@@ -336,7 +336,7 @@ class EfficientNet(BaseModule):
         ]  # stochastic depth decay rule
 
         for i, layer_cfg in enumerate(layer_setting):
-            # Avoid building unused layers in mmdetection.
+            # Avoid building archive layers in mmdetection.
             if i > max(self.out_indices) - 1:
                 break
             layer = []

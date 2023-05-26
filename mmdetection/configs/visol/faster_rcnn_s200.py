@@ -182,7 +182,7 @@ model = dict(
             nms=dict(type='nms', iou_threshold=0.85),
             max_per_img=100)))
 dataset_type = 'CarDataset'
-data_root = 'C:\MB_Project\project\Competition\VISOL\data'
+data_root = r'C:\MB_Project\project\Competition\VISOL\data'
 data = dict(
     samples_per_gpu=2,
     workers_per_gpu=0,
@@ -190,8 +190,8 @@ data = dict(
         type='MultiImageMixDataset',
         dataset=dict(
             type='CarDataset',
-            ann_file='C:\MB_Project\project\Competition\VISOL\data\train.txt',
-            img_prefix='C:\MB_Project\project\Competition\VISOL\data',
+            ann_file=r'C:\MB_Project\project\Competition\VISOL\data\train.txt',
+            img_prefix=r'C:\MB_Project\project\Competition\VISOL\data',
             pipeline=[
                 dict(type='LoadImageFromFile'),
                 dict(type='LoadAnnotations', with_bbox=True)
@@ -220,8 +220,8 @@ data = dict(
     val=dict(
         type='CarDataset',
         test_mode=False,
-        ann_file='C:\MB_Project\project\Competition\VISOL\data\val.txt',
-        img_prefix='C:\MB_Project\project\Competition\VISOL\data',
+        ann_file=r'C:\MB_Project\project\Competition\VISOL\data\val.txt',
+        img_prefix=r'C:\MB_Project\project\Competition\VISOL\data',
         pipeline=[
             dict(type='LoadImageFromFile'),
             dict(
@@ -243,8 +243,8 @@ data = dict(
         ]),
     test=dict(
         type='CarDataset',
-        ann_file='C:\MB_Project\project\Competition\VISOL\data\test.txt',
-        img_prefix='C:\MB_Project\project\Competition\VISOL\data',
+        ann_file=r'C:\MB_Project\project\Competition\VISOL\data\test.txt',
+        img_prefix=r'C:\MB_Project\project\Competition\VISOL\data',
         test_mode=True,
         pipeline=[
             dict(type='LoadImageFromFile'),
@@ -286,6 +286,6 @@ workflow = [('train', 1)]
 opencv_num_threads = 0
 mp_start_method = 'fork'
 auto_scale_lr = dict(enable=True, base_batch_size=16)
-work_dir = 'C:\MB_Project\project\Competition\VISOL\mmdetection\configs\visol'
+work_dir = r'C:\MB_Project\project\Competition\VISOL\mmdetection\configs\visol'
 auto_resume = False
 gpu_ids = [0]

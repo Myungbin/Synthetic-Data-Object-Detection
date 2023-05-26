@@ -42,7 +42,7 @@ class PointAssigner(BaseAssigner):
             gt_bboxes (Tensor): Groundtruth boxes, shape (k, 4).
             gt_bboxes_ignore (Tensor, optional): Ground truth bboxes that are
                 labelled as `ignored`, e.g., crowd boxes in COCO.
-                NOTE: currently unused.
+                NOTE: currently archive.
             gt_labels (Tensor, optional): Label of gt_bboxes, shape (k, ).
 
         Returns:

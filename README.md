@@ -9,6 +9,11 @@
 
 - 학습용 합성데이터를 활용하여 `자동차 탐지를 수행하는 AI 모델`을 개발해야 합니다.
 
+## Result
+| Model    | Backbone | Depth |Public mAp |
+|----------|---------|-------|------------|
+| FasterRCNN | ResNeXt | 101   |0.9133|
+| FasterRCNN | ResNeSt | 200   |0.9341|
 
 ## Host
 - 주최 : 비솔(VISOL)  

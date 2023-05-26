@@ -230,7 +230,7 @@ class BaseDetector(BaseModule, metaclass=ABCMeta):
         Args:
             data (dict): The output of dataloader.
             optimizer (:obj:`torch.optim.Optimizer` | dict): The optimizer of
-                runner is passed to ``train_step()``. This argument is unused
+                runner is passed to ``train_step()``. This argument is archive
                 and reserved.
 
         Returns:
