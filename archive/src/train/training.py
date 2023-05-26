@@ -1,7 +1,7 @@
 import numpy as np
 from tqdm import tqdm
 
-from src.config.config import cfg
+from archive.src.config.config import cfg
 
 
 def train(model, train_loader, optimizer, scheduler):

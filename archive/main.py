@@ -1,11 +1,11 @@
 import torch
 
-from src.model.basemodel import build_model
-from src.config.config import cfg, seed_everything
-from src.train.training import train
-from src.evaluation.evaluation import inference
-from src.data.dataloader import DatasetLoader
-from src.train.scheduler import CosineAnnealingWarmUpRestarts
+from archive.src.model.basemodel import build_model
+from archive.src.config.config import cfg, seed_everything
+from archive.src.train.training import train
+from archive.src.evaluation.evaluation import inference
+from archive.src.data.dataloader import DatasetLoader
+from archive.src.train.scheduler import CosineAnnealingWarmUpRestarts
 
 seed_everything(cfg.SEED)
 

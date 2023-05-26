@@ -2,7 +2,7 @@ import pandas as pd
 import torch
 from tqdm import tqdm
 
-from src.config.config import cfg
+from archive.src.config.config import cfg
 
 
 def box_denormalize(x1, y1, x2, y2, width, height):

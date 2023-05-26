@@ -3,7 +3,7 @@ import warnings
 import torchvision
 from torchvision.models.detection.faster_rcnn import FasterRCNN_ResNet50_FPN_V2_Weights
 
-from src.config.config import cfg
+from archive.src.config.config import cfg
 
 warnings.filterwarnings(action='ignore')
 

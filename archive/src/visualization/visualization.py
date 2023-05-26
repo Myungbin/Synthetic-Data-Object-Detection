@@ -55,8 +55,8 @@ def draw_boxes_test_image(image_path, annotation_path):
 import pandas as pd
 
 # 파일 경로 설정
-image_file = r'C:\MB_Project\project\Competition\VISOL\data\train\syn_00001.png'
-annotation_file = r'C:\MB_Project\project\Competition\VISOL\data\train\syn_00001.txt'
+image_file = r'/data/train/syn_00001.png'
+annotation_file = r'/data/train/syn_00001.txt'
 
 # 함수 실행
 draw_boxes_on_image(image_file, annotation_file)
