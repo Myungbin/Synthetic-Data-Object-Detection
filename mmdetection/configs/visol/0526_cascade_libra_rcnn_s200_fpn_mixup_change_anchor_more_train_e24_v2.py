@@ -15,11 +15,19 @@ model = dict(
         style='pytorch',
         init_cfg=dict(type='Pretrained',
                       checkpoint='open-mmlab://resnest200')),
-    neck=dict(
-        type='FPN',
-        in_channels=[256, 512, 1024, 2048],
-        out_channels=256,
-        num_outs=5),
+    neck=[
+        dict(
+            type='FPN',
+            in_channels=[256, 512, 1024, 2048],
+            out_channels=256,
+            num_outs=5),
+        dict(
+            type='BFP',
+            in_channels=256,
+            num_levels=5,
+            refine_level=2,
+            refine_type='non_local')
+    ],
     rpn_head=dict(
         type='RPNHead',
         in_channels=256,
@@ -62,8 +70,13 @@ model = dict(
                     type='CrossEntropyLoss',
                     use_sigmoid=False,
                     loss_weight=1.0),
-                loss_bbox=dict(type='SmoothL1Loss', beta=1.0,
-                               loss_weight=1.0)),
+                loss_bbox=dict(
+                #_delete_=True,
+                type='BalancedL1Loss',
+                alpha=0.5,
+                gamma=1.5,
+                beta=1.0,
+                loss_weight=1.0)),
             dict(
                 type='Shared2FCBBoxHead',
                 in_channels=256,
@@ -79,8 +92,13 @@ model = dict(
                     type='CrossEntropyLoss',
                     use_sigmoid=False,
                     loss_weight=1.0),
-                loss_bbox=dict(type='SmoothL1Loss', beta=1.0,
-                               loss_weight=1.0)),
+                loss_bbox=dict(
+                #_delete_=True,
+                type='BalancedL1Loss',
+                alpha=0.5,
+                gamma=1.5,
+                beta=1.0,
+                loss_weight=1.0)),
             dict(
                 type='Shared2FCBBoxHead',
                 in_channels=256,
@@ -96,7 +114,13 @@ model = dict(
                     type='CrossEntropyLoss',
                     use_sigmoid=False,
                     loss_weight=1.0),
-                loss_bbox=dict(type='SmoothL1Loss', beta=1.0, loss_weight=1.0))
+                loss_bbox=dict(
+                #_delete_=True,
+                type='BalancedL1Loss',
+                alpha=0.5,
+                gamma=1.5,
+                beta=1.0,
+                loss_weight=1.0))
         ]),
     train_cfg=dict(
         rpn=dict(
@@ -131,13 +155,16 @@ model = dict(
                     match_low_quality=False,
                     ignore_iof_thr=-1),
                 sampler=dict(
-                    type='RandomSampler',
-                    num=512,
-                    pos_fraction=0.25,
-                    neg_pos_ub=-1,
-                    add_gt_as_proposals=True),
-                pos_weight=-1,
-                debug=False),
+                type='CombinedSampler',
+                num=512,
+                pos_fraction=0.25,
+                add_gt_as_proposals=True,
+                pos_sampler=dict(type='InstanceBalancedPosSampler'),
+                neg_sampler=dict(
+                    type='IoUBalancedNegSampler',
+                    floor_thr=-1,
+                    floor_fraction=0,
+                    num_bins=3))),
             dict(
                 assigner=dict(
                     type='MaxIoUAssigner',
@@ -147,13 +174,16 @@ model = dict(
                     match_low_quality=False,
                     ignore_iof_thr=-1),
                 sampler=dict(
-                    type='RandomSampler',
-                    num=512,
-                    pos_fraction=0.25,
-                    neg_pos_ub=-1,
-                    add_gt_as_proposals=True),
-                pos_weight=-1,
-                debug=False),
+                type='CombinedSampler',
+                num=512,
+                pos_fraction=0.25,
+                add_gt_as_proposals=True,
+                pos_sampler=dict(type='InstanceBalancedPosSampler'),
+                neg_sampler=dict(
+                    type='IoUBalancedNegSampler',
+                    floor_thr=-1,
+                    floor_fraction=0,
+                    num_bins=3))),
             dict(
                 assigner=dict(
                     type='MaxIoUAssigner',
@@ -163,13 +193,16 @@ model = dict(
                     match_low_quality=False,
                     ignore_iof_thr=-1),
                 sampler=dict(
-                    type='RandomSampler',
-                    num=512,
-                    pos_fraction=0.25,
-                    neg_pos_ub=-1,
-                    add_gt_as_proposals=True),
-                pos_weight=-1,
-                debug=False)
+                type='CombinedSampler',
+                num=512,
+                pos_fraction=0.25,
+                add_gt_as_proposals=True,
+                pos_sampler=dict(type='InstanceBalancedPosSampler'),
+                neg_sampler=dict(
+                    type='IoUBalancedNegSampler',
+                    floor_thr=-1,
+                    floor_fraction=0,
+                    num_bins=3)))
         ]),
     test_cfg=dict(
         rpn=dict(
@@ -182,24 +215,61 @@ model = dict(
             nms=dict(type='nms', iou_threshold=0.85),
             max_per_img=100)))
 dataset_type = 'CarDataset'
-data_root = 'C:\MB_Project\project\Competition\VISOL\data'
+data_root = '/content/'
+img_norm_cfg = dict(
+    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
+train_pipeline = [
+    dict(type='PhotoMetricDistortion'),
+    dict(
+        type='MixUp',
+        img_scale=(1040, 1920),
+        ratio_range=(0.8, 1.6),
+        pad_val=0),
+    dict(type='Resize', img_scale=(1333, 800), keep_ratio=True),
+    dict(type='RandomFlip', flip_ratio=0.0),
+    dict(
+        type='Normalize',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
+        to_rgb=True),
+    dict(type='Pad', size_divisor=32),
+    dict(type='DefaultFormatBundle'),
+    dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels'])
+]
+test_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(
+        type='MultiScaleFlipAug',
+        img_scale=(1333, 800),
+        flip=False,
+        transforms=[
+            dict(type='Resize', keep_ratio=True),
+            dict(type='RandomFlip'),
+            dict(
+                type='Normalize',
+                mean=[123.675, 116.28, 103.53],
+                std=[58.395, 57.12, 57.375],
+                to_rgb=True),
+            dict(type='Pad', size_divisor=32),
+            dict(type='ImageToTensor', keys=['img']),
+            dict(type='Collect', keys=['img'])
+        ])
+]
 data = dict(
-    samples_per_gpu=4,
-    workers_per_gpu=0,
+    samples_per_gpu=2,
+    workers_per_gpu=2,
     train=dict(
         type='MultiImageMixDataset',
         dataset=dict(
             type='CarDataset',
-            ann_file='C:\MB_Project\project\Competition\VISOL\data\train.txt',
-            img_prefix='C:\MB_Project\project\Competition\VISOL\data',
+            ann_file='/content/train.txt',
+            img_prefix='/content/train',
             pipeline=[
                 dict(type='LoadImageFromFile'),
                 dict(type='LoadAnnotations', with_bbox=True)
             ]),
         pipeline=[
             dict(type='PhotoMetricDistortion'),
-            dict(type='Corrupt', corruption='gaussian_noise'),
-            dict(type='RandomAffine'),
             dict(
                 type='MixUp',
                 img_scale=(1040, 1920),
@@ -219,8 +289,8 @@ data = dict(
     val=dict(
         type='CarDataset',
         test_mode=False,
-        ann_file='C:\MB_Project\project\Competition\VISOL\data\val.txt',
-        img_prefix='C:\MB_Project\project\Competition\VISOL\data',
+        ann_file='/content/val.txt',
+        img_prefix='/content/train',
         pipeline=[
             dict(type='LoadImageFromFile'),
             dict(
@@ -242,8 +312,8 @@ data = dict(
         ]),
     test=dict(
         type='CarDataset',
-        ann_file='C:\MB_Project\project\Competition\VISOL\data\test.txt',
-        img_prefix='C:\MB_Project\project\Competition\VISOL\data',
+        ann_file='/content/test.txt',
+        img_prefix='/content/test',
         test_mode=True,
         pipeline=[
             dict(type='LoadImageFromFile'),
@@ -265,11 +335,10 @@ data = dict(
                 ])
         ]))
 evaluation = dict(interval=2, metric='mAP', iou_thr=0.85)
-optimizer = dict(
-    type='AdamW', lr=0.0001, betas=(0.9, 0.999), weight_decay=0.05)
+optimizer = dict(type='SGD', lr=0.02, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
 lr_config = dict(
-    policy='CosineAnnealing',
+    policy='step',
     warmup='linear',
     warmup_iters=500,
     warmup_ratio=0.001,
@@ -286,6 +355,6 @@ workflow = [('train', 1)]
 opencv_num_threads = 0
 mp_start_method = 'fork'
 auto_scale_lr = dict(enable=True, base_batch_size=16)
-work_dir = 'C:\MB_Project\project\Competition\VISOL\mmdetection\configs\visol'
+work_dir = '/content/drive/MyDrive/합성데이터_기반_객체_탐지/cascade_libra_rcnn_resnest200_fixed_seed/mixup_change_anchor_change_head_more_train_e24'
 auto_resume = False
 gpu_ids = [0]
