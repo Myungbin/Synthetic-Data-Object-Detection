@@ -1,5 +1,3 @@
-pretrained = 'https://github.com/SwinTransformer/storage/releases/download/v1.0.0/swin_base_patch4_window12_384_22k.pth'
-
 albu_train_transforms = [
     dict(
         type='Cutout',
@@ -13,28 +11,23 @@ albu_train_transforms = [
 model = dict(
     type='CascadeRCNN',
     backbone=dict(
-        type='SwinTransformer',
-        pretrain_img_size=384,
-        embed_dims=128,
-        patch_size=4,
-        window_size=12,
-        mlp_ratio=4,
-        depths=[2, 2, 18, 2],
-        num_heads=[4, 8, 16, 32],
-        qkv_bias=True,
-        qk_scale=None,
-        drop_rate=0.,
-        attn_drop_rate=0.,
-        drop_path_rate=0.3,
-        patch_norm=True,
+        type='ResNeSt',
+        stem_channels=128,
+        depth=200,
+        radix=2,
+        reduction_factor=4,
+        avg_down_stride=True,
+        num_stages=4,
         out_indices=(0, 1, 2, 3),
-        with_cp=False,
-        convert_weights=True,
-        init_cfg=dict(type='Pretrained', checkpoint=pretrained),
-    ),
+        frozen_stages=1,
+        norm_cfg=dict(type='BN', requires_grad=True),
+        norm_eval=True,
+        style='pytorch',
+        init_cfg=dict(type='Pretrained',
+                      checkpoint='open-mmlab://resnest200')),
     neck=dict(
         type='FPN',
-        in_channels=[128, 256, 512, 1024],
+        in_channels=[256, 512, 1024, 2048],
         out_channels=256,
         num_outs=5),
     rpn_head=dict(
@@ -136,41 +129,9 @@ model = dict(
         rpn_proposal=dict(
             nms_pre=2000,
             max_per_img=2000,
-            nms=dict(type='nms', iou_threshold=0.85),
+            nms=dict(type='nms', iou_threshold=0.7),
             min_bbox_size=0),
         rcnn=[
-            dict(
-                assigner=dict(
-                    type='MaxIoUAssigner',
-                    pos_iou_thr=0.65,
-                    neg_iou_thr=0.65,
-                    min_pos_iou=0.65,
-                    match_low_quality=False,
-                    ignore_iof_thr=-1),
-                sampler=dict(
-                    type='RandomSampler',
-                    num=512,
-                    pos_fraction=0.25,
-                    neg_pos_ub=-1,
-                    add_gt_as_proposals=True),
-                pos_weight=-1,
-                debug=False),
-            dict(
-                assigner=dict(
-                    type='MaxIoUAssigner',
-                    pos_iou_thr=0.75,
-                    neg_iou_thr=0.75,
-                    min_pos_iou=0.75,
-                    match_low_quality=False,
-                    ignore_iof_thr=-1),
-                sampler=dict(
-                    type='RandomSampler',
-                    num=512,
-                    pos_fraction=0.25,
-                    neg_pos_ub=-1,
-                    add_gt_as_proposals=True),
-                pos_weight=-1,
-                debug=False),
             dict(
                 assigner=dict(
                     type='MaxIoUAssigner',
@@ -186,20 +147,52 @@ model = dict(
                     neg_pos_ub=-1,
                     add_gt_as_proposals=True),
                 pos_weight=-1,
+                debug=False),
+            dict(
+                assigner=dict(
+                    type='MaxIoUAssigner',
+                    pos_iou_thr=0.9,
+                    neg_iou_thr=0.9,
+                    min_pos_iou=0.9,
+                    match_low_quality=False,
+                    ignore_iof_thr=-1),
+                sampler=dict(
+                    type='RandomSampler',
+                    num=512,
+                    pos_fraction=0.25,
+                    neg_pos_ub=-1,
+                    add_gt_as_proposals=True),
+                pos_weight=-1,
+                debug=False),
+            dict(
+                assigner=dict(
+                    type='MaxIoUAssigner',
+                    pos_iou_thr=0.95,
+                    neg_iou_thr=0.95,
+                    min_pos_iou=0.95,
+                    match_low_quality=False,
+                    ignore_iof_thr=-1),
+                sampler=dict(
+                    type='RandomSampler',
+                    num=512,
+                    pos_fraction=0.25,
+                    neg_pos_ub=-1,
+                    add_gt_as_proposals=True),
+                pos_weight=-1,
                 debug=False)
         ]),
     test_cfg=dict(
         rpn=dict(
             nms_pre=1000,
             max_per_img=1000,
-            nms=dict(type='nms', iou_threshold=0.3),
+            nms=dict(type='nms', iou_threshold=0.01),
             min_bbox_size=0),
         rcnn=dict(
             score_thr=0.05,
-            nms=dict(type='nms', iou_threshold=0.85),
+            nms=dict(type='nms', iou_threshold=0.05),
             max_per_img=100)))
 dataset_type = 'CarDataset'
-data_root = r'C:\MB_Project\project\Competition\VISOL\data'
+data_root = 'C:\MB_Project\project\Competition\VISOL\data'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 test_pipeline = [
@@ -230,49 +223,49 @@ policies = [[{
     'type': 'EqualizeTransform',
     'prob': 0.6
 }],
-    [{
-        'type': 'ColorTransform',
-        'prob': 0.6,
-        'level': 10
-    }, {
-        'type': 'BrightnessTransform',
-        'prob': 0.6,
-        'level': 3
-    }],
-    [{
-        'type': 'ColorTransform',
-        'prob': 0.6,
-        'level': 10
-    }, {
-        'type': 'ContrastTransform',
-        'prob': 0.6,
-        'level': 5
-    }],
-    [{
-        'type': 'EqualizeTransform',
-        'prob': 0.6
-    }, {
-        'type': 'BrightnessTransform',
-        'prob': 0.6,
-        'level': 3
-    }],
-    [{
-        'type': 'EqualizeTransform',
-        'prob': 0.6
-    }, {
-        'type': 'ContrastTransform',
-        'prob': 0.6,
-        'level': 5
-    }],
-    [{
-        'type': 'BrightnessTransform',
-        'prob': 0.6,
-        'level': 3
-    }, {
-        'type': 'ContrastTransform',
-        'prob': 0.6,
-        'level': 5
-    }]]
+            [{
+                'type': 'ColorTransform',
+                'prob': 0.6,
+                'level': 10
+            }, {
+                'type': 'BrightnessTransform',
+                'prob': 0.6,
+                'level': 3
+            }],
+            [{
+                'type': 'ColorTransform',
+                'prob': 0.6,
+                'level': 10
+            }, {
+                'type': 'ContrastTransform',
+                'prob': 0.6,
+                'level': 5
+            }],
+            [{
+                'type': 'EqualizeTransform',
+                'prob': 0.6
+            }, {
+                'type': 'BrightnessTransform',
+                'prob': 0.6,
+                'level': 3
+            }],
+            [{
+                'type': 'EqualizeTransform',
+                'prob': 0.6
+            }, {
+                'type': 'ContrastTransform',
+                'prob': 0.6,
+                'level': 5
+            }],
+            [{
+                'type': 'BrightnessTransform',
+                'prob': 0.6,
+                'level': 3
+            }, {
+                'type': 'ContrastTransform',
+                'prob': 0.6,
+                'level': 5
+            }]]
 dataset_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations', with_bbox=True)
@@ -288,54 +281,52 @@ train_pipeline = [
             'type': 'EqualizeTransform',
             'prob': 0.6
         }],
-            [{
-                'type': 'ColorTransform',
-                'prob': 0.6,
-                'level': 10
-            }, {
-                'type': 'BrightnessTransform',
-                'prob': 0.6,
-                'level': 3
-            }],
-            [{
-                'type': 'ColorTransform',
-                'prob': 0.6,
-                'level': 10
-            }, {
-                'type': 'ContrastTransform',
-                'prob': 0.6,
-                'level': 5
-            }],
-            [{
-                'type': 'EqualizeTransform',
-                'prob': 0.6
-            }, {
-                'type': 'BrightnessTransform',
-                'prob': 0.6,
-                'level': 3
-            }],
-            [{
-                'type': 'EqualizeTransform',
-                'prob': 0.6
-            }, {
-                'type': 'ContrastTransform',
-                'prob': 0.6,
-                'level': 5
-            }],
-            [{
-                'type': 'BrightnessTransform',
-                'prob': 0.6,
-                'level': 3
-            }, {
-                'type': 'ContrastTransform',
-                'prob': 0.6,
-                'level': 5
-            }]]),
+                  [{
+                      'type': 'ColorTransform',
+                      'prob': 0.6,
+                      'level': 10
+                  }, {
+                      'type': 'BrightnessTransform',
+                      'prob': 0.6,
+                      'level': 3
+                  }],
+                  [{
+                      'type': 'ColorTransform',
+                      'prob': 0.6,
+                      'level': 10
+                  }, {
+                      'type': 'ContrastTransform',
+                      'prob': 0.6,
+                      'level': 5
+                  }],
+                  [{
+                      'type': 'EqualizeTransform',
+                      'prob': 0.6
+                  }, {
+                      'type': 'BrightnessTransform',
+                      'prob': 0.6,
+                      'level': 3
+                  }],
+                  [{
+                      'type': 'EqualizeTransform',
+                      'prob': 0.6
+                  }, {
+                      'type': 'ContrastTransform',
+                      'prob': 0.6,
+                      'level': 5
+                  }],
+                  [{
+                      'type': 'BrightnessTransform',
+                      'prob': 0.6,
+                      'level': 3
+                  }, {
+                      'type': 'ContrastTransform',
+                      'prob': 0.6,
+                      'level': 5
+                  }]]),
     dict(type='PhotoMetricDistortion'),
     dict(
         type='MixUp',
-        # 추가
-        flip_ratio=0.0,
         img_scale=(1040, 1920),
         ratio_range=(0.8, 1.6),
         pad_val=0),
@@ -378,8 +369,8 @@ data = dict(
         type='MultiImageMixDataset',
         dataset=dict(
             type='CarDataset',
-            ann_file=r'C:\MB_Project\project\Competition\VISOL\data\train.txt',
-            img_prefix=r'C:\MB_Project\project\Competition\VISOL\data',
+            ann_file='C:\MB_Project\project\Competition\VISOL\data\train.txt',
+            img_prefix='C:\MB_Project\project\Competition\VISOL\data',
             pipeline=[
                 dict(type='LoadImageFromFile'),
                 dict(type='LoadAnnotations', with_bbox=True)
@@ -396,54 +387,52 @@ data = dict(
                     'type': 'EqualizeTransform',
                     'prob': 0.6
                 }],
-                    [{
-                        'type': 'ColorTransform',
-                        'prob': 0.6,
-                        'level': 10
-                    }, {
-                        'type': 'BrightnessTransform',
-                        'prob': 0.6,
-                        'level': 3
-                    }],
-                    [{
-                        'type': 'ColorTransform',
-                        'prob': 0.6,
-                        'level': 10
-                    }, {
-                        'type': 'ContrastTransform',
-                        'prob': 0.6,
-                        'level': 5
-                    }],
-                    [{
-                        'type': 'EqualizeTransform',
-                        'prob': 0.6
-                    }, {
-                        'type': 'BrightnessTransform',
-                        'prob': 0.6,
-                        'level': 3
-                    }],
-                    [{
-                        'type': 'EqualizeTransform',
-                        'prob': 0.6
-                    }, {
-                        'type': 'ContrastTransform',
-                        'prob': 0.6,
-                        'level': 5
-                    }],
-                    [{
-                        'type': 'BrightnessTransform',
-                        'prob': 0.6,
-                        'level': 3
-                    }, {
-                        'type': 'ContrastTransform',
-                        'prob': 0.6,
-                        'level': 5
-                    }]]),
+                          [{
+                              'type': 'ColorTransform',
+                              'prob': 0.6,
+                              'level': 10
+                          }, {
+                              'type': 'BrightnessTransform',
+                              'prob': 0.6,
+                              'level': 3
+                          }],
+                          [{
+                              'type': 'ColorTransform',
+                              'prob': 0.6,
+                              'level': 10
+                          }, {
+                              'type': 'ContrastTransform',
+                              'prob': 0.6,
+                              'level': 5
+                          }],
+                          [{
+                              'type': 'EqualizeTransform',
+                              'prob': 0.6
+                          }, {
+                              'type': 'BrightnessTransform',
+                              'prob': 0.6,
+                              'level': 3
+                          }],
+                          [{
+                              'type': 'EqualizeTransform',
+                              'prob': 0.6
+                          }, {
+                              'type': 'ContrastTransform',
+                              'prob': 0.6,
+                              'level': 5
+                          }],
+                          [{
+                              'type': 'BrightnessTransform',
+                              'prob': 0.6,
+                              'level': 3
+                          }, {
+                              'type': 'ContrastTransform',
+                              'prob': 0.6,
+                              'level': 5
+                          }]]),
             dict(type='PhotoMetricDistortion'),
             dict(
                 type='MixUp',
-                # 추가
-                flip_ratio=0.0,
                 img_scale=(1040, 1920),
                 ratio_range=(0.8, 1.6),
                 pad_val=0),
@@ -482,8 +471,8 @@ data = dict(
     val=dict(
         type='CarDataset',
         test_mode=False,
-        ann_file=r'C:\MB_Project\project\Competition\VISOL\data\val.txt',
-        img_prefix=r'C:\MB_Project\project\Competition\VISOL\data',
+        ann_file='C:\MB_Project\project\Competition\VISOL\data\val.txt',
+        img_prefix='C:\MB_Project\project\Competition\VISOL\data',
         pipeline=[
             dict(type='LoadImageFromFile'),
             dict(
@@ -505,8 +494,8 @@ data = dict(
         ]),
     test=dict(
         type='CarDataset',
-        ann_file=r'C:\MB_Project\project\Competition\VISOL\data\test.txt',
-        img_prefix=r'C:\MB_Project\project\Competition\VISOL\data',
+        ann_file='C:\MB_Project\project\Competition\VISOL\data\test.txt',
+        img_prefix='C:\MB_Project\project\Competition\VISOL\data',
         test_mode=True,
         pipeline=[
             dict(type='LoadImageFromFile'),
@@ -534,10 +523,9 @@ optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
 lr_config = dict(
     policy='CosineAnnealing',
     warmup='linear',
-    warmup_iters=1000,
-    warmup_ratio=1.0 / 10,
-    min_lr_ratio=1e-5)
-
+    warmup_iters=500,
+    warmup_ratio=0.001,
+    min_lr=0)
 runner = dict(type='EpochBasedRunner', max_epochs=24)
 checkpoint_config = dict(interval=2)
 log_config = dict(interval=50, hooks=[dict(type='TextLoggerHook')])
@@ -550,6 +538,6 @@ workflow = [('train', 1)]
 opencv_num_threads = 0
 mp_start_method = 'fork'
 auto_scale_lr = dict(enable=True, base_batch_size=16)
-work_dir = r'C:\MB_Project\project\Competition\VISOL\mmdetection\configs\visol'
+work_dir = 'C:\MB_Project\project\Competition\VISOL\mmdetection\configs\visol'
 auto_resume = False
 gpu_ids = [0]

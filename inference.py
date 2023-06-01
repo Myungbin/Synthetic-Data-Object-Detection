@@ -10,7 +10,7 @@ from config import cfg
 import warnings
 warnings.filterwarnings(action='ignore')
 
-with open(join(cfg.RESULT_PATH, 'result0526.pkl'), "rb") as f:
+with open(join(cfg.RESULT_PATH, '0601result.pkl'), "rb") as f:
     data = pickle.load(f)
 
 results = pd.read_csv(cfg.SAMPLE_SUBMISSION_PATH)
