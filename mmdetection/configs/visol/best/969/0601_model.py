@@ -369,8 +369,8 @@ data = dict(
         type='MultiImageMixDataset',
         dataset=dict(
             type='CarDataset',
-            ann_file=r'C:\MB_Project\project\Competition\VISOL\data\train.txt',
-            img_prefix=r'C:\MB_Project\project\Competition\VISOL\data',
+            ann_file='C:\MB_Project\project\Competition\VISOL\data\train.txt',
+            img_prefix='C:\MB_Project\project\Competition\VISOL\data',
             pipeline=[
                 dict(type='LoadImageFromFile'),
                 dict(type='LoadAnnotations', with_bbox=True)
@@ -471,8 +471,8 @@ data = dict(
     val=dict(
         type='CarDataset',
         test_mode=False,
-        ann_file=r'C:\MB_Project\project\Competition\VISOL\data\val.txt',
-        img_prefix=r'C:\MB_Project\project\Competition\VISOL\data',
+        ann_file='C:\MB_Project\project\Competition\VISOL\data\val.txt',
+        img_prefix='C:\MB_Project\project\Competition\VISOL\data',
         pipeline=[
             dict(type='LoadImageFromFile'),
             dict(
@@ -526,14 +526,14 @@ lr_config = dict(
     warmup_iters=500,
     warmup_ratio=0.001,
     min_lr=0)
-runner = dict(type='EpochBasedRunner', max_epochs=50)
+runner = dict(type='EpochBasedRunner', max_epochs=24)
 checkpoint_config = dict(interval=2)
 log_config = dict(interval=50, hooks=[dict(type='TextLoggerHook')])
 custom_hooks = [dict(type='NumClassCheckHook')]
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 load_from = None
-resume_from = r'C:\MB_Project\project\Competition\VISOL\mmdetection\configs\visol\latest.pth'
+resume_from = 'C:\MB_Project\project\Competition\VISOL\mmdetection\configs\visol\latest.pth'
 workflow = [('train', 1)]
 opencv_num_threads = 0
 mp_start_method = 'fork'

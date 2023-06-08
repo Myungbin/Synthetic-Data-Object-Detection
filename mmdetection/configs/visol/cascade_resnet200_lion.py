@@ -517,8 +517,9 @@ data = dict(
                 ])
         ]))
 evaluation = dict(interval=2, metric='mAP', iou_thr=0.85)
-optimizer = dict(
-    type='AdamW', lr=0.0001, betas=(0.9, 0.999), weight_decay=0.05)
+custom_imports = dict(imports=['mmdet.core.optimizer.lion_optim'], allow_failed_imports=False)
+
+optimizer = dict(type='Lion', lr=1e-3, weight_decay=1e-2)
 optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
 lr_config = dict(
     policy='CosineAnnealing',
