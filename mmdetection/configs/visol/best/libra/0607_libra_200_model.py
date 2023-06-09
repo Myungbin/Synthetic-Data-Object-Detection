@@ -1,3 +1,4 @@
+# model settings
 model = dict(
     type='FasterRCNN',
     backbone=dict(
@@ -39,7 +40,7 @@ model = dict(
             strides=[4, 8, 16, 32, 64]),
         bbox_coder=dict(
             type='DeltaXYWHBBoxCoder',
-            target_means=[0.0, 0.0, 0.0, 0.0],
+            target_means=[.0, .0, .0, .0],
             target_stds=[1.0, 1.0, 1.0, 1.0]),
         loss_cls=dict(
             type='CrossEntropyLoss', use_sigmoid=True, loss_weight=1.0),
@@ -59,7 +60,7 @@ model = dict(
             num_classes=34,
             bbox_coder=dict(
                 type='DeltaXYWHBBoxCoder',
-                target_means=[0.0, 0.0, 0.0, 0.0],
+                target_means=[0., 0., 0., 0.],
                 target_stds=[0.1, 0.1, 0.2, 0.2]),
             reg_class_agnostic=False,
             loss_cls=dict(
@@ -70,6 +71,7 @@ model = dict(
                 gamma=1.5,
                 beta=1.0,
                 loss_weight=1.0))),
+    # model training and testing settings
     train_cfg=dict(
         rpn=dict(
             assigner=dict(
@@ -123,9 +125,13 @@ model = dict(
         rcnn=dict(
             score_thr=0.05,
             nms=dict(type='nms', iou_threshold=0.05),
-            max_per_img=100)))
+            max_per_img=100)
+        # soft-nms is also supported for rcnn testing
+        # e.g., nms=dict(type='soft_nms', iou_threshold=0.5, min_score=0.05)
+    ))
+
 dataset_type = 'CarDataset'
-data_root = 'C:\MB_Project\project\Competition\VISOL\data'
+data_root = r'C:\MB_Project\project\Competition\VISOL\data'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 test_pipeline = [
@@ -260,7 +266,7 @@ train_pipeline = [
     dict(type='PhotoMetricDistortion'),
     dict(
         type='MixUp',
-        flip_ratio=0.0,
+        flip_ratio = 0.0,
         img_scale=(1040, 1920),
         ratio_range=(1.0, 1.6),
         pad_val=0),
@@ -303,8 +309,8 @@ data = dict(
         type='MultiImageMixDataset',
         dataset=dict(
             type='CarDataset',
-            ann_file='C:\MB_Project\project\Competition\VISOL\data\train.txt',
-            img_prefix='C:\MB_Project\project\Competition\VISOL\data',
+            ann_file=r'/data/train.txt',
+            img_prefix=r'C:\MB_Project\project\Competition\VISOL\data',
             pipeline=[
                 dict(type='LoadImageFromFile'),
                 dict(type='LoadAnnotations', with_bbox=True)
@@ -367,7 +373,7 @@ data = dict(
             dict(type='PhotoMetricDistortion'),
             dict(
                 type='MixUp',
-                flip_ratio=0.0,
+                flip_ratio = 0.0,
                 img_scale=(1040, 1920),
                 ratio_range=(1.0, 1.6),
                 pad_val=0),
@@ -406,8 +412,8 @@ data = dict(
     val=dict(
         type='CarDataset',
         test_mode=False,
-        ann_file='C:\MB_Project\project\Competition\VISOL\data\val.txt',
-        img_prefix='C:\MB_Project\project\Competition\VISOL\data',
+        ann_file=r'/data/val.txt',
+        img_prefix=r'C:\MB_Project\project\Competition\VISOL\data',
         pipeline=[
             dict(type='LoadImageFromFile'),
             dict(
@@ -429,8 +435,8 @@ data = dict(
         ]),
     test=dict(
         type='CarDataset',
-        ann_file='C:\MB_Project\project\Competition\VISOL\data\test.txt',
-        img_prefix='C:\MB_Project\project\Competition\VISOL\data',
+        ann_file=r'/data/test.txt',
+        img_prefix=r'C:\MB_Project\project\Competition\VISOL\data',
         test_mode=True,
         pipeline=[
             dict(type='LoadImageFromFile'),
@@ -451,6 +457,7 @@ data = dict(
                     dict(type='Collect', keys=['img'])
                 ])
         ]))
+
 evaluation = dict(interval=2, metric='mAP', iou_thr=0.85)
 optimizer = dict(
     type='AdamW', lr=0.0001, betas=(0.9, 0.999), weight_decay=0.05)
@@ -468,11 +475,11 @@ custom_hooks = [dict(type='NumClassCheckHook')]
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 load_from = None
-resume_from = None
+resume_from = r'C:\MB_Project\project\Competition\VISOL\mmdetection\configs\visol\latest.pth'
 workflow = [('train', 1)]
 opencv_num_threads = 0
 mp_start_method = 'fork'
 auto_scale_lr = dict(enable=True, base_batch_size=16)
-work_dir = 'C:\MB_Project\project\Competition\VISOL\mmdetection\configs\visol'
+work_dir = r'/configs/visol'
 auto_resume = False
 gpu_ids = [0]

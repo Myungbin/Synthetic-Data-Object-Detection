@@ -8,9 +8,10 @@ import pandas as pd
 from config import cfg
 
 import warnings
+
 warnings.filterwarnings(action='ignore')
 
-with open(join(cfg.RESULT_PATH, '0605result.pkl'), "rb") as f:
+with open(join(cfg.RESULT_PATH, '0609result.pkl'), "rb") as f:
     data = pickle.load(f)
 
 results = pd.read_csv(cfg.SAMPLE_SUBMISSION_PATH)
@@ -38,4 +39,3 @@ for idx in range(len(test_img_paths)):
 current_time = datetime.datetime.now()
 file_name = current_time.strftime("%Y%m%d%H%M")
 results.to_csv(join(cfg.SUBMISSION_PATH, f'{file_name}submission.csv'), index=False)
-

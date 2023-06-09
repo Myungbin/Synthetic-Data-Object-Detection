@@ -4,4 +4,7 @@ class Config:
     TEST_IMAGE = r'C:\MB_Project\project\Competition\VISOL\data\test\*.png'
     SUBMISSION_PATH = r'C:\MB_Project\project\Competition\VISOL\data\submission'
 
+    RESULT_IMG_PATH = r"C:\MB_Project\project\Competition\VISOL\data\result_img"
+
+
 cfg = Config()
