@@ -49,7 +49,7 @@ data = dict(
         type='MultiImageMixDataset',
         dataset=dict(
             type='CarDataset',
-            ann_file=r'C:\MB_Project\project\Competition\VISOL\data\\train.txt',
+            ann_file=r'/data/train.txt',
             img_prefix=r'C:\MB_Project\project\Competition\VISOL\data',
             pipeline=[
                 dict(type='LoadImageFromFile'),
@@ -59,7 +59,7 @@ data = dict(
     val=dict(
         type='CarDataset',
         test_mode=False,
-        ann_file=r'C:\MB_Project\project\Competition\VISOL\data\\val.txt',
+        ann_file=r'/data/val.txt',
         img_prefix=r'C:\MB_Project\project\Competition\VISOL\data',
         pipeline=[
             dict(type='LoadImageFromFile'),
@@ -75,7 +75,7 @@ data = dict(
         ]),
     test=dict(
         type='CarDataset',
-        ann_file=r'C:\MB_Project\project\Competition\VISOL\data\\test.txt',
+        ann_file=r'/data/test.txt',
         img_prefix=r'C:\MB_Project\project\Competition\VISOL\data',
         test_mode=True,
         pipeline=[
@@ -124,7 +124,7 @@ workflow = [('train', 1)]
 opencv_num_threads = 0
 mp_start_method = 'fork'
 auto_scale_lr = dict(enable=True, base_batch_size=16)
-work_dir = r'C:\MB_Project\project\Competition\VISOL\mmdetection\configs\visol'
+work_dir = r'/configs/visol'
 auto_resume = False
 gpu_ids = [0]
 

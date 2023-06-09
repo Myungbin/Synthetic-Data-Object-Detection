@@ -25,7 +25,7 @@ model = dict(
         anchor_generator=dict(
             type='AnchorGenerator',
             scales=[8],
-            ratios=[0.5, 1.0, 2.0],
+            ratios=[0.8, 1.0, 1.2],
             strides=[4, 8, 16, 32, 64]),
         bbox_coder=dict(
             type='DeltaXYWHBBoxCoder',
@@ -104,10 +104,28 @@ model = dict(
             score_thr=0.05,
             nms=dict(type='nms', iou_threshold=0.85),
             max_per_img=100)))
-
 dataset_type = 'CarDataset'
 data_root = r'C:\MB_Project\project\Competition\VISOL\data\\'
-
+img_norm_cfg = dict(
+    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
+train_pipeline = [
+    dict(type='Resize', img_scale=(1333, 800), keep_ratio=True),
+    dict(
+        type='MixUp',
+        img_scale=(1333, 800),
+        ratio_range=(0.8, 1.6),
+        pad_val=144.0),
+    dict(type='RandomFlip', flip_ratio=0.0),
+    dict(type='PhotoMetricDistortion'),
+    dict(
+        type='Normalize',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
+        to_rgb=True),
+    dict(type='Pad', size_divisor=32),
+    dict(type='DefaultFormatBundle'),
+    dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels'])
+]
 data = dict(
     samples_per_gpu=4,
     workers_per_gpu=0,
@@ -115,7 +133,7 @@ data = dict(
         type='MultiImageMixDataset',
         dataset=dict(
             type='CarDataset',
-            ann_file=r'C:\MB_Project\project\Competition\VISOL\data\\train.txt',
+            ann_file=r'/data/train.txt',
             img_prefix=r'C:\MB_Project\project\Competition\VISOL\data',
             pipeline=[
                 dict(type='LoadImageFromFile'),
@@ -123,12 +141,17 @@ data = dict(
             ]),
         pipeline=[
             dict(type='Resize', img_scale=(1333, 800), keep_ratio=True),
-            dict(type='MixUp', img_scale=(1333, 800), ratio_range=(0.8, 1.6), pad_val=0),
+            dict(
+                type='MixUp',
+                img_scale=(1333, 800),
+                ratio_range=(0.8, 1.6),
+                pad_val=144.0),
+            dict(type='Corrupt', corruption='contrast'),
             dict(type='RandomFlip', flip_ratio=0.0),
             dict(
                 type='Normalize',
-                mean=[110.91987503, 109.98977988, 105.10519435],
-                std=[64.47897036, 58.15192089, 50.28919623],
+                mean=[123.675, 116.28, 103.53],
+                std=[58.395, 57.12, 57.375],
                 to_rgb=True),
             dict(type='Pad', size_divisor=32),
             dict(type='DefaultFormatBundle'),
@@ -137,7 +160,7 @@ data = dict(
     val=dict(
         type='CarDataset',
         test_mode=False,
-        ann_file=r'C:\MB_Project\project\Competition\VISOL\data\\val.txt',
+        ann_file=r'/data/val.txt',
         img_prefix=r'C:\MB_Project\project\Competition\VISOL\data',
         pipeline=[
             dict(type='LoadImageFromFile'),
@@ -150,8 +173,8 @@ data = dict(
                     dict(type='RandomFlip'),
                     dict(
                         type='Normalize',
-                        mean=[110.91987503, 109.98977988, 105.10519435],
-                        std=[64.47897036, 58.15192089, 50.28919623],
+                        mean=[123.675, 116.28, 103.53],
+                        std=[58.395, 57.12, 57.375],
                         to_rgb=True),
                     dict(type='Pad', size_divisor=32),
                     dict(type='ImageToTensor', keys=['img']),
@@ -160,7 +183,7 @@ data = dict(
         ]),
     test=dict(
         type='CarDataset',
-        ann_file=r'C:\MB_Project\project\Competition\VISOL\data\\test.txt',
+        ann_file=r'/data/test.txt',
         img_prefix=r'C:\MB_Project\project\Competition\VISOL\data',
         test_mode=True,
         pipeline=[
@@ -174,8 +197,8 @@ data = dict(
                     dict(type='RandomFlip'),
                     dict(
                         type='Normalize',
-                        mean=[110.91987503, 109.98977988, 105.10519435],
-                        std=[64.47897036, 58.15192089, 50.28919623],
+                        mean=[123.675, 116.28, 103.53],
+                        std=[58.395, 57.12, 57.375],
                         to_rgb=True),
                     dict(type='Pad', size_divisor=32),
                     dict(type='ImageToTensor', keys=['img']),
@@ -191,8 +214,8 @@ lr_config = dict(
     warmup_iters=500,
     warmup_ratio=0.001,
     step=[8, 11])
-runner = dict(type='EpochBasedRunner', max_epochs=24)
-checkpoint_config = dict(interval=2)
+runner = dict(type='EpochBasedRunner', max_epochs=12)
+checkpoint_config = dict(interval=1)
 log_config = dict(interval=50, hooks=[dict(type='TextLoggerHook')])
 custom_hooks = [dict(type='NumClassCheckHook')]
 dist_params = dict(backend='nccl')
@@ -203,6 +226,6 @@ workflow = [('train', 1)]
 opencv_num_threads = 0
 mp_start_method = 'fork'
 auto_scale_lr = dict(enable=True, base_batch_size=16)
-work_dir = r'C:\MB_Project\project\Competition\VISOL\mmdetection\configs\visol'
+work_dir = r'/configs/visol'
 auto_resume = False
 gpu_ids = [0]
