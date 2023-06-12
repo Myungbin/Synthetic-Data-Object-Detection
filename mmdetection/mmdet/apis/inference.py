@@ -152,6 +152,11 @@ def inference_detector(model, imgs):
                 m, RoIPool
             ), 'CPU inference with RoIPool is not supported currently.'
 
+    # # when using GradCAM
+    # with torch.no_grad():
+    #     result, x_backbone, x_fpn = model(return_loss=False, rescale=True, **data)
+    # return result, x_backbone, x_fpn
+
     # forward the model
     with torch.no_grad():
         results = model(return_loss=False, rescale=True, **data)

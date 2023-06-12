@@ -62,6 +62,13 @@ class TwoStageDetector(BaseDetector):
         """bool: whether the detector has a RoI head"""
         return hasattr(self, 'roi_head') and self.roi_head is not None
 
+    # # when using GradCAM
+    # def extract_feat(self, img):
+    #     x_backbone = self.backbone(img)
+    #     if self.with_neck:
+    #         x_fpn = self.neck(x_backbone)
+    #     return x_backbone, x_fpn
+
     def extract_feat(self, img):
         """Directly extract features from the backbone+neck."""
         x = self.backbone(img)
@@ -80,11 +87,11 @@ class TwoStageDetector(BaseDetector):
         # rpn
         if self.with_rpn:
             rpn_outs = self.rpn_head(x)
-            outs = outs + (rpn_outs, )
+            outs = outs + (rpn_outs,)
         proposals = torch.randn(1000, 4).to(img.device)
         # roi_head
         roi_outs = self.roi_head.forward_dummy(x, proposals)
-        outs = outs + (roi_outs, )
+        outs = outs + (roi_outs,)
         return outs
 
     def forward_train(self,
@@ -170,6 +177,20 @@ class TwoStageDetector(BaseDetector):
         return await self.roi_head.async_simple_test(
             x, proposal_list, img_meta, rescale=rescale)
 
+    # # when using GradCAM
+    # def simple_test(self, img, img_metas, proposals=None, rescale=False):
+    #     assert self.with_bbox, 'Bbox head must be implemented.'
+    #
+    #     x_backbone, x_fpn = self.extract_feat(img)
+    #
+    #     if proposals is None:
+    #         proposal_list = self.rpn_head.simple_test_rpn(x_fpn, img_metas)
+    #     else:
+    #         proposal_list = proposals
+    #
+    #     return self.roi_head.simple_test(
+    #         x_fpn, proposal_list, img_metas, rescale=rescale), x_backbone, x_fpn
+
     def simple_test(self, img, img_metas, proposals=None, rescale=False):
         """Test without augmentation."""
 
@@ -207,5 +228,6 @@ class TwoStageDetector(BaseDetector):
                 f'{self.__class__.__name__} can not '
                 f'be exported to ONNX. Please refer to the '
                 f'list of supported models,'
-                f'https://mmdetection.readthedocs.io/en/latest/tutorials/pytorch2onnx.html#list-of-supported-models-exportable-to-onnx'  # noqa E501
+                f'https://mmdetection.readthedocs.io/en/latest/tutorials/pytorch2onnx.html#list-of-supported-models-exportable-to-onnx'
+                # noqa E501
             )
