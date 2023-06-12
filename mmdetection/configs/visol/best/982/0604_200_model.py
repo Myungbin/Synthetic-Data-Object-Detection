@@ -1,3 +1,13 @@
+albu_train_transforms = [
+    dict(
+        type='Cutout',
+        num_holes=13,
+        max_h_size=100,
+        max_w_size=100,
+        fill_value=0,
+        always_apply=False,
+        p=0.5)
+]
 model = dict(
     type='CascadeRCNN',
     backbone=dict(
@@ -119,15 +129,15 @@ model = dict(
         rpn_proposal=dict(
             nms_pre=2000,
             max_per_img=2000,
-            nms=dict(type='nms', iou_threshold=0.85),
+            nms=dict(type='nms', iou_threshold=0.7),
             min_bbox_size=0),
         rcnn=[
             dict(
                 assigner=dict(
                     type='MaxIoUAssigner',
-                    pos_iou_thr=0.5,
-                    neg_iou_thr=0.5,
-                    min_pos_iou=0.5,
+                    pos_iou_thr=0.85,
+                    neg_iou_thr=0.85,
+                    min_pos_iou=0.85,
                     match_low_quality=False,
                     ignore_iof_thr=-1),
                 sampler=dict(
@@ -141,9 +151,9 @@ model = dict(
             dict(
                 assigner=dict(
                     type='MaxIoUAssigner',
-                    pos_iou_thr=0.6,
-                    neg_iou_thr=0.6,
-                    min_pos_iou=0.6,
+                    pos_iou_thr=0.9,
+                    neg_iou_thr=0.9,
+                    min_pos_iou=0.9,
                     match_low_quality=False,
                     ignore_iof_thr=-1),
                 sampler=dict(
@@ -157,9 +167,9 @@ model = dict(
             dict(
                 assigner=dict(
                     type='MaxIoUAssigner',
-                    pos_iou_thr=0.7,
-                    neg_iou_thr=0.7,
-                    min_pos_iou=0.7,
+                    pos_iou_thr=0.95,
+                    neg_iou_thr=0.95,
+                    min_pos_iou=0.95,
                     match_low_quality=False,
                     ignore_iof_thr=-1),
                 sampler=dict(
@@ -175,16 +185,186 @@ model = dict(
         rpn=dict(
             nms_pre=1000,
             max_per_img=1000,
-            nms=dict(type='nms', iou_threshold=0.7),
+            nms=dict(type='nms', iou_threshold=0.01),
             min_bbox_size=0),
         rcnn=dict(
             score_thr=0.05,
-            nms=dict(type='nms', iou_threshold=0.85),
+            nms=dict(type='nms', iou_threshold=0.05),
             max_per_img=100)))
 dataset_type = 'CarDataset'
 data_root = r'C:\MB_Project\project\Competition\VISOL\data'
+img_norm_cfg = dict(
+    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
+test_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(
+        type='MultiScaleFlipAug',
+        img_scale=(1333, 800),
+        flip=False,
+        transforms=[
+            dict(type='Resize', keep_ratio=True),
+            dict(type='RandomFlip'),
+            dict(
+                type='Normalize',
+                mean=[123.675, 116.28, 103.53],
+                std=[58.395, 57.12, 57.375],
+                to_rgb=True),
+            dict(type='Pad', size_divisor=32),
+            dict(type='ImageToTensor', keys=['img']),
+            dict(type='Collect', keys=['img'])
+        ])
+]
+replace = (104, 116, 124)
+policies = [[{
+    'type': 'ColorTransform',
+    'prob': 0.6,
+    'level': 10
+}, {
+    'type': 'EqualizeTransform',
+    'prob': 0.6
+}],
+            [{
+                'type': 'ColorTransform',
+                'prob': 0.6,
+                'level': 10
+            }, {
+                'type': 'BrightnessTransform',
+                'prob': 0.6,
+                'level': 3
+            }],
+            [{
+                'type': 'ColorTransform',
+                'prob': 0.6,
+                'level': 10
+            }, {
+                'type': 'ContrastTransform',
+                'prob': 0.6,
+                'level': 5
+            }],
+            [{
+                'type': 'EqualizeTransform',
+                'prob': 0.6
+            }, {
+                'type': 'BrightnessTransform',
+                'prob': 0.6,
+                'level': 3
+            }],
+            [{
+                'type': 'EqualizeTransform',
+                'prob': 0.6
+            }, {
+                'type': 'ContrastTransform',
+                'prob': 0.6,
+                'level': 5
+            }],
+            [{
+                'type': 'BrightnessTransform',
+                'prob': 0.6,
+                'level': 3
+            }, {
+                'type': 'ContrastTransform',
+                'prob': 0.6,
+                'level': 5
+            }]]
+dataset_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(type='LoadAnnotations', with_bbox=True)
+]
+train_pipeline = [
+    dict(
+        type='AutoAugment',
+        policies=[[{
+            'type': 'ColorTransform',
+            'prob': 0.6,
+            'level': 10
+        }, {
+            'type': 'EqualizeTransform',
+            'prob': 0.6
+        }],
+                  [{
+                      'type': 'ColorTransform',
+                      'prob': 0.6,
+                      'level': 10
+                  }, {
+                      'type': 'BrightnessTransform',
+                      'prob': 0.6,
+                      'level': 3
+                  }],
+                  [{
+                      'type': 'ColorTransform',
+                      'prob': 0.6,
+                      'level': 10
+                  }, {
+                      'type': 'ContrastTransform',
+                      'prob': 0.6,
+                      'level': 5
+                  }],
+                  [{
+                      'type': 'EqualizeTransform',
+                      'prob': 0.6
+                  }, {
+                      'type': 'BrightnessTransform',
+                      'prob': 0.6,
+                      'level': 3
+                  }],
+                  [{
+                      'type': 'EqualizeTransform',
+                      'prob': 0.6
+                  }, {
+                      'type': 'ContrastTransform',
+                      'prob': 0.6,
+                      'level': 5
+                  }],
+                  [{
+                      'type': 'BrightnessTransform',
+                      'prob': 0.6,
+                      'level': 3
+                  }, {
+                      'type': 'ContrastTransform',
+                      'prob': 0.6,
+                      'level': 5
+                  }]]),
+    dict(type='PhotoMetricDistortion'),
+    dict(
+        type='MixUp',
+        flip_ratio=0.0,
+        img_scale=(1040, 1920),
+        ratio_range=(1.0, 1.6),
+        pad_val=0),
+    dict(type='Resize', img_scale=(1333, 800), keep_ratio=True),
+    dict(type='RandomFlip', flip_ratio=0.0),
+    dict(
+        type='Albu',
+        transforms=[
+            dict(
+                type='Cutout',
+                num_holes=13,
+                max_h_size=100,
+                max_w_size=100,
+                fill_value=0,
+                always_apply=False,
+                p=0.5)
+        ],
+        bbox_params=dict(
+            type='BboxParams',
+            format='pascal_voc',
+            label_fields=['gt_labels'],
+            min_visibility=0.0,
+            filter_lost_elements=True),
+        keymap=dict(img='image', gt_bboxes='bboxes'),
+        update_pad_shape=False,
+        skip_img_without_anno=True),
+    dict(
+        type='Normalize',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
+        to_rgb=True),
+    dict(type='Pad', size_divisor=32),
+    dict(type='DefaultFormatBundle'),
+    dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels'])
+]
 data = dict(
-    samples_per_gpu=1,
+    samples_per_gpu=3,
     workers_per_gpu=0,
     train=dict(
         type='MultiImageMixDataset',
@@ -195,18 +375,92 @@ data = dict(
             pipeline=[
                 dict(type='LoadImageFromFile'),
                 dict(type='LoadAnnotations', with_bbox=True)
-            ]),
+            ],
+            filter_empty_gt=False),
         pipeline=[
+            dict(
+                type='AutoAugment',
+                policies=[[{
+                    'type': 'ColorTransform',
+                    'prob': 0.6,
+                    'level': 10
+                }, {
+                    'type': 'EqualizeTransform',
+                    'prob': 0.6
+                }],
+                          [{
+                              'type': 'ColorTransform',
+                              'prob': 0.6,
+                              'level': 10
+                          }, {
+                              'type': 'BrightnessTransform',
+                              'prob': 0.6,
+                              'level': 3
+                          }],
+                          [{
+                              'type': 'ColorTransform',
+                              'prob': 0.6,
+                              'level': 10
+                          }, {
+                              'type': 'ContrastTransform',
+                              'prob': 0.6,
+                              'level': 5
+                          }],
+                          [{
+                              'type': 'EqualizeTransform',
+                              'prob': 0.6
+                          }, {
+                              'type': 'BrightnessTransform',
+                              'prob': 0.6,
+                              'level': 3
+                          }],
+                          [{
+                              'type': 'EqualizeTransform',
+                              'prob': 0.6
+                          }, {
+                              'type': 'ContrastTransform',
+                              'prob': 0.6,
+                              'level': 5
+                          }],
+                          [{
+                              'type': 'BrightnessTransform',
+                              'prob': 0.6,
+                              'level': 3
+                          }, {
+                              'type': 'ContrastTransform',
+                              'prob': 0.6,
+                              'level': 5
+                          }]]),
             dict(type='PhotoMetricDistortion'),
-            dict(type='Corrupt', corruption='fog'),
-            dict(type='RandomAffine'),
             dict(
                 type='MixUp',
+                flip_ratio=0.0,
                 img_scale=(1040, 1920),
                 ratio_range=(0.8, 1.6),
                 pad_val=0),
             dict(type='Resize', img_scale=(1333, 800), keep_ratio=True),
             dict(type='RandomFlip', flip_ratio=0.0),
+            dict(
+                type='Albu',
+                transforms=[
+                    dict(
+                        type='Cutout',
+                        num_holes=13,
+                        max_h_size=100,
+                        max_w_size=100,
+                        fill_value=0,
+                        always_apply=False,
+                        p=0.5)
+                ],
+                bbox_params=dict(
+                    type='BboxParams',
+                    format='pascal_voc',
+                    label_fields=['gt_labels'],
+                    min_visibility=0.0,
+                    filter_lost_elements=True),
+                keymap=dict(img='image', gt_bboxes='bboxes'),
+                update_pad_shape=False,
+                skip_img_without_anno=True),
             dict(
                 type='Normalize',
                 mean=[123.675, 116.28, 103.53],
@@ -223,7 +477,6 @@ data = dict(
         img_prefix=r'C:\MB_Project\project\Competition\VISOL\data',
         pipeline=[
             dict(type='LoadImageFromFile'),
-            dict(type='Corrupt', corruption='fog'),
             dict(
                 type='MultiScaleFlipAug',
                 img_scale=(1333, 800),
@@ -274,15 +527,15 @@ lr_config = dict(
     warmup='linear',
     warmup_iters=500,
     warmup_ratio=0.001,
-    step=[16, 22])
-runner = dict(type='EpochBasedRunner', max_epochs=24)
+    min_lr=0)
+runner = dict(type='EpochBasedRunner', max_epochs=50)
 checkpoint_config = dict(interval=2)
-log_config = dict(interval=50, hooks=[dict(type='TextLoggerHook')])
+log_config = dict(interval=100, hooks=[dict(type='TextLoggerHook')])
 custom_hooks = [dict(type='NumClassCheckHook')]
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 load_from = None
-resume_from = None
+resume_from = None  # r'C:\MB_Project\project\Competition\VISOL\mmdetection\configs\visol\best\982\latest.pth'
 workflow = [('train', 1)]
 opencv_num_threads = 0
 mp_start_method = 'fork'
