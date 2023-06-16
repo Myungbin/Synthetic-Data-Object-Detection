@@ -1,16 +1,17 @@
+import os
+import shutil
+from pathlib import Path
+
 import cv2
 import pandas as pd
-import os
-from tqdm import tqdm
 from ensemble_boxes import *
-from pathlib import Path
-import shutil
+from tqdm import tqdm
 
 ### test set 이미지 위치 경로
 img_path = './data/test/'
 
 ### 앙상블하고자 하는 csv 파일들을 하나의 폴더에 넣어두고, 그 폴더의 경로를 적으면 됨
-folder_path = './data/submission/'
+folder_path = './data/ensemble/'
 csv_files = os.listdir(folder_path)
 csv_files = [os.path.join(folder_path, i) for i in csv_files]
 
@@ -49,11 +50,11 @@ for i in range(len(csv_files)):
 
         img_file = file_name.split('.')[0] + '.png'
         img = cv2.imread(os.path.join(img_path, img_file))
-        h = img.shape[0]
+        h, w = img.shape[0], img.shape[1]
 
-        x1 /= h
+        x1 /= w
         y1 /= h
-        x2 /= h
+        x2 /= w
         y2 /= h
         saved = file_name.split('.')[0]
         with open(f'./{tmp}/{i}/{saved}.csv', 'a') as f:
@@ -136,11 +137,11 @@ with open(final_saved_name, 'w') as f:
 
             img_file = file_name.split('.')[0].split('\\')[-1] + '.png'
             img = cv2.imread(os.path.join(img_path, img_file))
-            h = img.shape[0]
+            h, w = img.shape[0], img.shape[1]
 
-            x1 *= h
+            x1 *= w
             y1 *= h
-            x3 *= h
+            x3 *= w
             y3 *= h
 
             x1 = int(x1)

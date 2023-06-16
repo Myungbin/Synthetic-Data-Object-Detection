@@ -39,12 +39,13 @@ if you use other detectors, it is easy to achieve it like this
 
 '''
 
-from mmdet.apis import inference_detector, init_detector
+import os
+
 import cv2
 import numpy as np
-import time
 import torch
-import os
+
+from mmdet.apis import inference_detector, init_detector
 
 
 def main():

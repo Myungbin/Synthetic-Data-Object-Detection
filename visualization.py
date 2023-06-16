@@ -1,7 +1,7 @@
 import os
 
-import pandas as pd
 import matplotlib.pyplot as plt
+import pandas as pd
 
 df = pd.read_csv(r'C:\MB_Project\project\Competition\VISOL\data\submission\202306091006submission.csv')
 
@@ -17,4 +17,4 @@ def visual_box(n):
     plt.show()
 
 
-visual_box(100)
+visual_box(1000)
