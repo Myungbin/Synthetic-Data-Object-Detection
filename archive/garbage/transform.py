@@ -1,6 +1,6 @@
 import pandas as pd
 
-df = pd.read_csv('final.csv')
+df = pd.read_csv('../../final.csv')
 
 
 def rename_file(filename):
