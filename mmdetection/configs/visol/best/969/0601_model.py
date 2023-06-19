@@ -185,11 +185,11 @@ model = dict(
         rpn=dict(
             nms_pre=1000,
             max_per_img=1000,
-            nms=dict(type='nms', iou_threshold=0.85),
+            nms=dict(type='nms', iou_threshold=0.01),
             min_bbox_size=0),
         rcnn=dict(
             score_thr=0.05,
-            nms=dict(type='nms', iou_threshold=0.85),
+            nms=dict(type='nms', iou_threshold=0.05),
             max_per_img=100)))
 dataset_type = 'CarDataset'
 data_root = r'C:\MB_Project\project\Competition\VISOL\data'

@@ -10,10 +10,20 @@
 - 학습용 합성데이터를 활용하여 `자동차 탐지를 수행하는 AI 모델`을 개발해야 합니다.
 
 ## Result
-| Model    | Backbone | Depth |Public mAp |
-|----------|---------|-------|------------|
-| FasterRCNN | ResNeXt | 101   |0.9133|
-| FasterRCNN | ResNeSt | 200   |0.9341|
+`Base Augmentation`  Resize, Flip, Normalize
+
+| Model       | Backbone | Depth | Augmentation                                      | Public mAp |
+|-------------|----------|-------|---------------------------------------------------|-----------|
+| FasterRCNN  | ResNeXt  | 101   | Mixup                                             | 0.9133    |
+| FasterRCNN  | ResNeSt  | 200   | Mixup                                             | 0.9341    |
+| FasterRCNN  | ResNeSt  | 101   | Mixup, Cutout                                     | 0.95      |
+| CascadeRCNN | ResNeSt  | 200   | Mixup, Cutout, AutoAugment, PhotoMetricDistortion | 0.969     |
+| CascadeRCNN | ResNeSt  | 200   | Mixup, Cutout, AutoAugment, PhotoMetricDistortion | 0.982     |
+| ...         | ...      | ...   | ...                                               | ...      |
+
+### Ensemble
+https://github.com/ZFTurbo/Weighted-Boxes-Fusion  
+8 Model `Weighted-Boxes-Fusion`   
 
 ## Host
 - 주최 : 비솔(VISOL)  

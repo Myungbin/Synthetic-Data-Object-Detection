@@ -1,5 +1,4 @@
 import os
-import shutil
 from pathlib import Path
 
 import cv2
@@ -7,19 +6,17 @@ import pandas as pd
 from ensemble_boxes import *
 from tqdm import tqdm
 
-### test set 이미지 위치 경로
+# test set 이미지 위치 경로
 img_path = './data/test/'
 
-### 앙상블하고자 하는 csv 파일들을 하나의 폴더에 넣어두고, 그 폴더의 경로를 적으면 됨
+# 앙상블하고자 하는 csv 파일들을 하나의 폴더에 넣어두고, 그 폴더의 경로를 적으면 됨
 folder_path = './data/ensemble/'
 csv_files = os.listdir(folder_path)
 csv_files = [os.path.join(folder_path, i) for i in csv_files]
 
-### 최종 저장되는 앙상블 csv 파일명
+# 최종 저장되는 앙상블 csv 파일명
 final_saved_name = 'final.csv'
 
-# --------------------- 최적 값으로 setting 되어있음 -------------------
-### 101~108 번째 줄 보면 ensemble 방식을 선택할 수 있음. 방식에 따른 변수들 설정
 iou_thr = 0.1
 skip_box_thr = 0.0001
 sigma = 0.1
@@ -27,7 +24,7 @@ sigma = 0.1
 weights = []
 for w in range(len(csv_files)):
     weights.append(1)
-#
+
 tmp = 'ensemble'
 if not os.path.exists(tmp):
     os.makedirs(tmp)
