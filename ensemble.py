@@ -20,7 +20,7 @@ final_saved_name = 'final.csv'
 
 # --------------------- 최적 값으로 setting 되어있음 -------------------
 ### 101~108 번째 줄 보면 ensemble 방식을 선택할 수 있음. 방식에 따른 변수들 설정
-iou_thr = 0.5
+iou_thr = 0.1
 skip_box_thr = 0.0001
 sigma = 0.1
 
@@ -167,5 +167,4 @@ df = df.reset_index(drop=True)
 #     df = df.drop(index=i)
 
 df.to_csv(final_saved_name, index=False)
-shutil.rmtree(f'{tmp}')
 print('end')
