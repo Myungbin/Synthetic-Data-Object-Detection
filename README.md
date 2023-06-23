@@ -32,6 +32,7 @@ VISOL
 └─ README.md
 ```
 ## Getting Started
+`Python 3.8.10` `mmdetection 2.x`
 ```
 git clone https://github.com/Myungbin/VISOL.git
 
@@ -45,8 +46,9 @@ python .\tools\test.py '{config_file_path}' '{model_result_path}' --format-only 
 ```
 
 ## Experiment
-`Base Augmentation`  Resize(1333, 800), Flip, Normalize  
-EfficientDet, Swin Transformer, Libra R-CNN, and YOLO were used in the experiment.
+The default augmentations used were `Resize`, `Flip`, and `Normalize`.  
+EfficientDet, Swin Transformer, Libra R-CNN, and YOLO were used in the experiment.  
+In the end, `Cascade R-CNN` and `Faster R-CNN` models were used.
 
 | Model       | Backbone | Depth | Augmentation                                      | Public mAp |
 |-------------|----------|-------|---------------------------------------------------|-----------|
@@ -57,10 +59,13 @@ EfficientDet, Swin Transformer, Libra R-CNN, and YOLO were used in the experimen
 | CascadeRCNN | ResNeSt  | 200   | Mixup, Cutout, AutoAugment, PhotoMetricDistortion | 0.982     |
 | ...         | ...      | ...   | ...                                               | ...      |
 
-### Ensemble
-8 Model `Weighted-Boxes-Fusion`  
-Public mAp `0.9964`  
-Private mAP `0.99403`
+#### Ensemble
+`Weighted-Boxes-Fusion` on the results of 8 models. 
+
+
+## Result
+Public mAp `0.9964`  Private mAP `0.99403`  
+You can find detailed information about the experimental results through the PowerPoint presentation.
 
 ## Development Environment
 ```
