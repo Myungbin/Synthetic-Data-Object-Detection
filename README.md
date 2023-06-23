@@ -11,6 +11,7 @@
 ```
 VISOL
 ├─ .gitignore
+├─ archive  # implementation pytorch 
 ├─ data  
 │  ├─ raw
 │  │  └─ raw data
