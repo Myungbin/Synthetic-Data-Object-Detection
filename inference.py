@@ -37,7 +37,7 @@ def inference(test_img_path, submission):
 
 
 if __name__ == "__main__":
-    with open(join(cfg.RESULT_PATH, '969result.pkl'), "rb") as f:
+    with open(join(cfg.RESULT_PATH, '982-result.pkl'), "rb") as f:
         data = pickle.load(f)
     result = pd.read_csv(cfg.SAMPLE_SUBMISSION_PATH)
     test_img_paths = sorted(glob.glob(cfg.TEST_IMAGE))
