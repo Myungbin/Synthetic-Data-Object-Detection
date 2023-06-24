@@ -13,24 +13,27 @@ Synthetic-Data-Object-Detection
 ├─ .gitignore
 ├─ archive  # implementation pytorch 
 ├─ data  
-│  ├─ raw
-│  │  └─ raw data
-│  ├─ ensemble
-│  │  └─ ensemble data
-│  └─ submission
+│  ├─ train/  # train image
+│  ├─ test/ 
+│  ├─ classes.txt  # label 
+│  ├─ train.txt  # image path
+│  ├─ val.txt
+│  ├─ test.txt
+│  └─ submission/ 
 ├─ models
 │  └─ model file
 ├─ mmdetection
-│  ├─ configs  # hyperparameter & path
+│  ├─ configs  
 │  │  ├─ _base_  
 │  │  └─ visol  # model config
-│  │      └─ model config file.py
+│  │      └─ final/  # final config file
 │  └─ mmdet
 ├─ inference.py # Test Inference
 ├─ grad_cam.py  # GradCam
 ├─ ensemble.py  # weighted boxes fusion
 └─ README.md
 ```
+
 ## Getting Started
 `Python 3.8.10` `mmdetection 2.x`
 ```
@@ -48,7 +51,6 @@ python .\tools\test.py '{config_file_path}' '{model_result_path}' --format-only 
 The project utilizes a custom dataset for training and evaluation.
 The dataset consists of labeled images with bounding box annotations for each object of interest.
 The dataset is not included in this repository and needs to be prepared separately.
-
 
 ## Experiment
 The default augmentations used were `Resize`, `Flip`, and `Normalize`.  
