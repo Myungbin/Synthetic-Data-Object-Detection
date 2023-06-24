@@ -51,8 +51,8 @@ from tqdm import tqdm
 
 
 def main(img):
-    config = r"C:\MB_Project\project\Competition\VISOL\mmdetection\configs\visol\best\95\cascade_rcnn_x101_64x4d_fpn_1x_coco_2.py"
-    checkpoint = r'C:\MB_Project\project\Competition\VISOL\mmdetection\configs\visol\best\95\latest.pth'
+    config = r"C:\MB_Project\project\Competition\VISOL\mmdetection\configs\visol\best\cutv4\0616_custom_cutout_v4_model.py"
+    checkpoint = r'C:\MB_Project\project\Competition\VISOL\mmdetection\configs\visol\best\cutv4\epoch_24.pth'
     device = 'cuda:0'
     # build the model from a config file and a checkpoint file
     model = init_detector(config, checkpoint, device=device)
@@ -64,8 +64,8 @@ def main(img):
     # result = inference_detector(model, img)
     result, x_backone, x_fpn = inference_detector(model, img)
 
-    if not os.path.exists('feature_map_cascade_unused_cutout'):
-        os.makedirs('feature_map_cascade_unused_cutout')
+    if not os.path.exists('feature_map_cascade_custom_cutout'):
+        os.makedirs('feature_map_cascade_custom_cutout')
 
     feature_index = 0
     for feature in x_backone:
@@ -86,9 +86,9 @@ def main(img):
         heatmap = heatmap / np.max(heatmap)
         heatmap_image = np.uint8(255 * heatmap)
 
-        cv2.imwrite('feature_map_cascade_unused_cutout/' + 'stage_' + str(feature_index) + image_name + '_heatmap.jpg', heatmap_image)
+        cv2.imwrite('feature_map_cascade_custom_cutout/' + 'stage_' + str(feature_index) + image_name + '_heatmap.jpg', heatmap_image)
         result = cv2.addWeighted(image, 0.8, heatmap_image, 0.3, 0)
-        cv2.imwrite('feature_map_cascade_unused_cutout/' + 'stage_' + str(feature_index) + image_name + '_result.jpg', result)
+        cv2.imwrite('feature_map_cascade_custom_cutout/' + 'stage_' + str(feature_index) + image_name + '_result.jpg', result)
 
     feature_index = 1
     for feature in x_fpn:
@@ -106,9 +106,9 @@ def main(img):
         heatmap = heatmap / np.max(heatmap)
         heatmap_image = np.uint8(255 * heatmap)
 
-        cv2.imwrite('feature_map_cascade_unused_cutout/' + 'P' + str(feature_index) + image_name + '_heatmap.jpg', heatmap_image)
+        cv2.imwrite('feature_map_cascade_custom_cutout/' + 'P' + str(feature_index) + image_name + '_heatmap.jpg', heatmap_image)
         result = cv2.addWeighted(image, 0.8, heatmap_image, 0.4, 0)
-        cv2.imwrite('feature_map_cascade_unused_cutout/' + 'P' + str(feature_index) + image_name + '_result.jpg', result)
+        cv2.imwrite('feature_map_cascade_custom_cutout/' + 'P' + str(feature_index) + image_name + '_result.jpg', result)
 
 
 if __name__ == '__main__':

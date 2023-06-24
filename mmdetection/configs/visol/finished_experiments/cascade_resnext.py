@@ -1,9 +1,9 @@
 albu_train_transforms = [
     dict(
         type='Cutout',
-        num_holes=13,
-        max_h_size=100,
-        max_w_size=100,
+        num_holes=8,
+        max_h_size=16,
+        max_w_size=16,
         fill_value=0,
         always_apply=False,
         p=0.5)
@@ -11,20 +11,18 @@ albu_train_transforms = [
 model = dict(
     type='CascadeRCNN',
     backbone=dict(
-        type='ResNeSt',
-        stem_channels=128,
-        depth=200,
-        radix=2,
-        reduction_factor=4,
-        avg_down_stride=True,
+        type='ResNeXt',
+        depth=101,
         num_stages=4,
         out_indices=(0, 1, 2, 3),
         frozen_stages=1,
         norm_cfg=dict(type='BN', requires_grad=True),
         norm_eval=True,
         style='pytorch',
-        init_cfg=dict(type='Pretrained',
-                      checkpoint='open-mmlab://resnest200')),
+        init_cfg=dict(
+            type='Pretrained', checkpoint='open-mmlab://resnext101_64x4d'),
+        groups=64,
+        base_width=4),
     neck=dict(
         type='FPN',
         in_channels=[256, 512, 1024, 2048],
@@ -185,11 +183,11 @@ model = dict(
         rpn=dict(
             nms_pre=1000,
             max_per_img=1000,
-            nms=dict(type='nms', iou_threshold=0.01),
+            nms=dict(type='nms', iou_threshold=0.7),
             min_bbox_size=0),
         rcnn=dict(
             score_thr=0.05,
-            nms=dict(type='nms', iou_threshold=0.05),
+            nms=dict(type='nms', iou_threshold=0.5),
             max_per_img=100)))
 dataset_type = 'CarDataset'
 data_root = r'C:\MB_Project\project\Competition\VISOL\data'
@@ -327,9 +325,8 @@ train_pipeline = [
     dict(type='PhotoMetricDistortion'),
     dict(
         type='MixUp',
-        flip_ratio=0.0,
         img_scale=(1040, 1920),
-        ratio_range=(1.0, 1.6),
+        ratio_range=(0.8, 1.6),
         pad_val=0),
     dict(type='Resize', img_scale=(1333, 800), keep_ratio=True),
     dict(type='RandomFlip', flip_ratio=0.0),
@@ -338,9 +335,9 @@ train_pipeline = [
         transforms=[
             dict(
                 type='Cutout',
-                num_holes=13,
-                max_h_size=100,
-                max_w_size=100,
+                num_holes=8,
+                max_h_size=16,
+                max_w_size=16,
                 fill_value=0,
                 always_apply=False,
                 p=0.5)
@@ -364,14 +361,14 @@ train_pipeline = [
     dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels'])
 ]
 data = dict(
-    samples_per_gpu=3,
+    samples_per_gpu=4,
     workers_per_gpu=0,
     train=dict(
         type='MultiImageMixDataset',
         dataset=dict(
             type='CarDataset',
-            ann_file='C:/MB_Project/project/Competition/VISOL/data/train.txt',
-            img_prefix='C:/MB_Project/project/Competition/VISOL/data',
+            ann_file=r'/data/train.txt',
+            img_prefix=r'C:\MB_Project\project\Competition\VISOL\data',
             pipeline=[
                 dict(type='LoadImageFromFile'),
                 dict(type='LoadAnnotations', with_bbox=True)
@@ -434,7 +431,6 @@ data = dict(
             dict(type='PhotoMetricDistortion'),
             dict(
                 type='MixUp',
-                flip_ratio=0.0,
                 img_scale=(1040, 1920),
                 ratio_range=(0.8, 1.6),
                 pad_val=0),
@@ -445,7 +441,7 @@ data = dict(
                 transforms=[
                     dict(
                         type='Cutout',
-                        num_holes=13,
+                        num_holes=8,
                         max_h_size=100,
                         max_w_size=100,
                         fill_value=0,
@@ -473,8 +469,8 @@ data = dict(
     val=dict(
         type='CarDataset',
         test_mode=False,
-        ann_file='C:/MB_Project/project/Competition/VISOL/data/val.txt',
-        img_prefix='C:/MB_Project/project/Competition/VISOL/data',
+        ann_file=r'/data/val.txt',
+        img_prefix=r'C:\MB_Project\project\Competition\VISOL\data',
         pipeline=[
             dict(type='LoadImageFromFile'),
             dict(
@@ -496,8 +492,8 @@ data = dict(
         ]),
     test=dict(
         type='CarDataset',
-        ann_file='C:/MB_Project/project/Competition/VISOL/data/test.txt',
-        img_prefix='C:/MB_Project/project/Competition/VISOL/data',
+        ann_file=r'/data/test.txt',
+        img_prefix=r'C:\MB_Project\project\Competition\VISOL\data',
         test_mode=True,
         pipeline=[
             dict(type='LoadImageFromFile'),
@@ -528,18 +524,18 @@ lr_config = dict(
     warmup_iters=500,
     warmup_ratio=0.001,
     min_lr=0)
-runner = dict(type='EpochBasedRunner', max_epochs=50)
+runner = dict(type='EpochBasedRunner', max_epochs=24)
 checkpoint_config = dict(interval=2)
-log_config = dict(interval=100, hooks=[dict(type='TextLoggerHook')])
+log_config = dict(interval=50, hooks=[dict(type='TextLoggerHook')])
 custom_hooks = [dict(type='NumClassCheckHook')]
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 load_from = None
-resume_from = None  # r'C:/MB_Project/project/Competition/VISOL/mmdetection/configs/visol/best/982/latest.pth'
+resume_from = r"C:\MB_Project\project\Competition\VISOL\mmdetection\configs\visol\latest.pth"
 workflow = [('train', 1)]
 opencv_num_threads = 0
 mp_start_method = 'fork'
 auto_scale_lr = dict(enable=True, base_batch_size=16)
-work_dir = 'C:/MB_Project/project/Competition/VISOL/mmdetection/configs/visol'
+work_dir = r'/configs/visol'
 auto_resume = False
 gpu_ids = [0]
