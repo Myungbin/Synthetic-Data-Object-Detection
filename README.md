@@ -73,8 +73,9 @@ In the end, `Cascade R-CNN` models was used.
 Public mAp `0.9964`  Private mAP `0.99403`  
 
 To reproduce the results of a public mAP of 0.9964 and a private mAP of 0.99403, follow these steps  
-In final folder `969.py`, the **seed** used was `1927851590`, and a **GPU** `NVIDIA RTX 3090` was utilized. 
-For the other case with **seed** `378452678`, an **GPU** `NVIDIA A100`  was used.
+In the final folder, `969.py` must be trained and inferred using a seed of **1927851590** and the **NVIDIA RTX 3090** GPU.
+`For all other cases` must be trained and inferred using a seed of **378452678** and the **NVIDIA A100** GPU.
+Finally, You must ensemble the inference results of each model using Weighted-Boxes-Fusion
 
 You can find detailed information about the experimental results through the PowerPoint presentation.
 
