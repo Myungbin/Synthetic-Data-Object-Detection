@@ -44,6 +44,12 @@ python .\tools\train.py .\configs\visol\{config_file.py}
 python .\tools\test.py '{config_file_path}' '{model_result_path}' --format-only --out '{result_path}'
 
 ```
+## Data
+[Dataset Link](https://dacon.io/competitions/official/236107/data)  
+The project utilizes a custom dataset for training and evaluation.
+The dataset consists of labeled images with bounding box annotations for each object of interest.
+The dataset is not included in this repository and needs to be prepared separately.
+
 
 ## Experiment
 The default augmentations used were `Resize`, `Flip`, and `Normalize`.  
