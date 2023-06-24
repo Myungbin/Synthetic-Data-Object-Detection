@@ -42,7 +42,6 @@ python -m pip install -r requirements.txt
 cd mmdetection
 python .\tools\train.py .\configs\visol\{config_file.py}
 python .\tools\test.py '{config_file_path}' '{model_result_path}' --format-only --out '{result_path}'
-
 ```
 ## Data
 [Dataset Link](https://dacon.io/competitions/official/236107/data)  
