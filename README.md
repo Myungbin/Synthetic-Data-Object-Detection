@@ -9,7 +9,7 @@
 
 ## Project structure
 ```
-VISOL
+Synthetic-Data-Object-Detection
 ├─ .gitignore
 ├─ archive  # implementation pytorch 
 ├─ data  
@@ -52,7 +52,7 @@ The dataset is not included in this repository and needs to be prepared separate
 
 ## Experiment
 The default augmentations used were `Resize`, `Flip`, and `Normalize`.  
-Faster R-CNN, EfficientDet, Swin Transformer, Libra R-CNN, and YOLO were used in the experiment.  
+Faster R-CNN, EfficientDet, Swin Transformer, Libra R-CNN, and YOLO were used in the experiment. You can check the other experiments in the "finished_experiments" folder.  
 In the end, `Cascade R-CNN` models was used.
 
 | Model         | Backbone | Depth | Augmentation                                      | Public mAp |
