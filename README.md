@@ -53,24 +53,30 @@ The dataset is not included in this repository and needs to be prepared separate
 
 ## Experiment
 The default augmentations used were `Resize`, `Flip`, and `Normalize`.  
-EfficientDet, Swin Transformer, Libra R-CNN, and YOLO were used in the experiment.  
-In the end, `Cascade R-CNN` and `Faster R-CNN` models were used.
+Faster R-CNN, EfficientDet, Swin Transformer, Libra R-CNN, and YOLO were used in the experiment.  
+In the end, `Cascade R-CNN` models was used.
 
-| Model       | Backbone | Depth | Augmentation                                      | Public mAp |
-|-------------|----------|-------|---------------------------------------------------|-----------|
-| FasterRCNN  | ResNeXt  | 101   | Mixup                                             | 0.9133    |
-| FasterRCNN  | ResNeSt  | 200   | Mixup                                             | 0.9341    |
-| FasterRCNN  | ResNeSt  | 101   | Mixup, Cutout                                     | 0.95      |
-| CascadeRCNN | ResNeSt  | 200   | Mixup, Cutout, AutoAugment, PhotoMetricDistortion | 0.969     |
-| CascadeRCNN | ResNeSt  | 200   | Mixup, Cutout, AutoAugment, PhotoMetricDistortion | 0.982     |
-| ...         | ...      | ...   | ...                                               | ...      |
+| Model         | Backbone | Depth | Augmentation                                      | Public mAp |
+|---------------|----------|-------|---------------------------------------------------|------------|
+| Cascade R-CNN | SwinT    | -     | Mixup, Cutout                                     | 0.89       |
+| Libra R-CNN   | Resnest  | 200   | Mixup, Cutout, AutoAugment, PhotoMetricDistortion | 0.89       |
+| Faster R-CNN  | ResNeXt  | 101   | Mixup                                             | 0.91     |
+| Faster R-CNN  | ResNeSt  | 200   | Mixup                                             | 0.93     |
+| Faster R-CNN  | ResNeSt  | 101   | Mixup, Cutout                                     | 0.95       |
+| Cascade R-CNN | ResNeSt  | 200   | Mixup, Cutout, AutoAugment, PhotoMetricDistortion | 0.98      |
+| ...           | ...      | ...   | ...                                               | ...        |
+
 
 #### Ensemble
-`Weighted-Boxes-Fusion` on the results of 8 models. 
-
+`Weighted-Boxes-Fusion` on the results of 8 models.
 
 ## Result
 Public mAp `0.9964`  Private mAP `0.99403`  
+
+To reproduce the results of a public mAP of 0.9964 and a private mAP of 0.99403, follow these steps  
+In final folder `969.py`, the **seed** used was `1927851590`, and a **GPU** `NVIDIA RTX 3090` was utilized. 
+For the other case with **seed** `378452678`, an **GPU** `NVIDIA A100`  was used.
+
 You can find detailed information about the experimental results through the PowerPoint presentation.
 
 ## Development Environment
@@ -78,7 +84,7 @@ You can find detailed information about the experimental results through the Pow
 OS: Window11
 CPU: Intel i9-11900K
 RAM: 128GB
-GPU: NVIDIA GeFocrce RTX3090
+GPU: NVIDIA GeFocrce RTX3090 & RTX4090 & A100 & V100
 ```
 
 ## Host
