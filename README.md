@@ -74,7 +74,7 @@ Public mAp `0.9964`  Private mAP `0.99403`
 
 To reproduce the results of a public mAP of 0.9964 and a private mAP of 0.99403, follow these steps  
 In the [final folder](https://github.com/Myungbin/VISOL/tree/main/mmdetection/configs/visol/final), `969.py` must be trained and inferred using a seed of **1927851590** and the **NVIDIA RTX 3090** GPU.
-`For all other cases` must be trained and inferred using a seed of **378452678** and the **NVIDIA A100** GPU.
+`For all other cases` must be trained and inferred using a seed of **378452678** and the **NVIDIA A100** GPU.  
 Finally, You must ensemble the inference results of each model using Weighted-Boxes-Fusion
 
 You can find detailed information about the experimental results through the PowerPoint presentation.
