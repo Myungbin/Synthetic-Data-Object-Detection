@@ -161,5 +161,21 @@ df = df.reset_index(drop=True)
 # for i in range(29999, len(df)):
 #     df = df.drop(index=i)
 
+df['x_dis'] = abs(df['point1_x'] - df['point2_x'])
+df['y_dis'] = abs(df['point1_y'] - df['point4_y'])
+df['ratio'] = df['y_dis'] / df['x_dis']
+print(len(df))
+df = df[df['y_dis'] < 450]
+df = df[df['y_dis'] > 150]
+df = df[df['x_dis'] < 400]
+df = df[df['x_dis'] > 200]
+df = df[df['ratio'] > 0.5]
+df = df[df['ratio'] < 1.4]
+
+df = df.sort_values('file_name')
+df = df.reset_index(drop=True)
+df.drop(['x_dis', 'y_dis', 'ratio'], axis=1, inplace=True)
+df.to_csv('weights_10m.csv', index=False)
+
 df.to_csv(final_saved_name, index=False)
 print('end')
