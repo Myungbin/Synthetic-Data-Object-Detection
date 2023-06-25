@@ -53,7 +53,17 @@ The dataset is not included in this repository and needs to be prepared separate
 
 ## Experiment
 The default augmentations used were `Resize`, `Flip`, and `Normalize`.  
-Faster R-CNN, EfficientDet, Swin Transformer, Libra R-CNN, and YOLO were used in the experiment. You can check the other experiments in the "finished_experiments" folder. In the end, `Cascade R-CNN` models was used.
+Faster R-CNN, EfficientDet, Swin Transformer, Libra R-CNN, and YOLO were used in the experiment. You can check the other experiments in the "finished_experiments" folder. In the end, `Cascade R-CNN` models was used.  
+
+| Model         | Backbone | Depth | Augmentation                                      |  mAp |
+|---------------|----------|-------|---------------------------------------------------|------|
+| Cascade R-CNN | SwinT    | -     | Mixup, Cutout                                     | 0.89 |
+| Libra R-CNN   | Resnest  | 200   | Mixup, Cutout, AutoAugment, PhotoMetricDistortion | 0.89 |
+| Faster R-CNN  | ResNeXt  | 101   | Mixup                                             | 0.91 |
+| Faster R-CNN  | ResNeSt  | 200   | Mixup                                             | 0.93 |
+| Faster R-CNN  | ResNeSt  | 101   | Mixup, Cutout                                     | 0.95 |
+| Cascade R-CNN | ResNeSt  | 200   | Mixup, Cutout, AutoAugment, PhotoMetricDistortion | 0.98 |
+| ...           | ...      | ...   | ...                                               | ...  |
 
 #### Ensemble
 `Weighted-Boxes-Fusion` on the results of 8 models.
