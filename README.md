@@ -21,11 +21,12 @@ Synthetic-Data-Object-Detection
 ├─ models
 │  └─ model file
 ├─ mmdetection
-│  ├─ configs  # hyperparameter & path
+│  ├─ configs  
 │  │  ├─ _base_  
 │  │  └─ visol  # model config
 │  │      └─ model config file.py
 │  └─ mmdet
+├─ mmdetection3.x/
 ├─ inference.py # Test Inference
 ├─ grad_cam.py  # GradCam
 ├─ ensemble.py  # weighted boxes fusion
@@ -73,9 +74,11 @@ In the end, `Cascade R-CNN` models was used.
 Public mAp `0.9964`  Private mAP `0.99403`  
 
 To reproduce the results of a public mAP of 0.9964 and a private mAP of 0.99403, follow these steps  
-In the [final folder](https://github.com/Myungbin/VISOL/tree/main/mmdetection/configs/visol/final), `969.py` must be trained and inferred using a seed of **1927851590** and the **NVIDIA RTX 3090** GPU.
-`For all other cases` must be trained and inferred using a seed of **378452678** and the **NVIDIA A100** GPU.  
-Finally, You must ensemble the inference results of each model using Weighted-Boxes-Fusion
+1. [cascade-rcnn-resnest200-v5.py](https://github.com/Myungbin/Synthetic-Data-Object-Detection/blob/main/mmdetection3.x/configs/visol/cascade-rcnn-resnest200-v5.py) must be trained and inferred using a seed of **2023** and the **NVIDIA A100** GPU. 
+Additionally, this file utilizes `mmdetection 3.x`, it should be executed based on the following [document](https://mmdetection.readthedocs.io/en/latest/get_started.html).
+2. In the [final folder](https://github.com/Myungbin/Synthetic-Data-Object-Detection/tree/main/mmdetection/configs/visol/final), `969.py` must be trained and inferred using a seed of **1927851590** and the **NVIDIA RTX 3090** GPU.
+3. `For all other cases` must be trained and inferred using a seed of **378452678** and the **NVIDIA A100** GPU.  
+4. Finally, You must ensemble the inference results of each model using Weighted-Boxes-Fusion
 
 You can find detailed information about the experimental results through the PowerPoint presentation.
 
