@@ -65,7 +65,7 @@ You can check the pretrained model weights [google drive](https://drive.google.c
 Public mAp `0.9964`  Private mAP `0.99403`  
 
 To reproduce the results of a public mAP of 0.9964 and a private mAP of 0.99403, follow these steps  
-1. [v7.py](https://github.com/Myungbin/Synthetic-Data-Object-Detection/blob/main/mmdetection3.x/configs/visol/cascade-rcnn-resnest200-v5.py) must be trained and inferred using a seed of **2023** and the **NVIDIA RTX 4090** GPU. 
+1. [v7.py](https://github.com/Myungbin/Synthetic-Data-Object-Detection/blob/main/mmdetection3.x/configs/visol/v7.py) must be trained and inferred using a seed of **2023** and the **NVIDIA RTX 4090** GPU. 
 Additionally, this file utilizes `mmdetection 3.x`, it should be executed based on the following [document](https://mmdetection.readthedocs.io/en/latest/get_started.html).
 2. In the [final folder](https://github.com/Myungbin/Synthetic-Data-Object-Detection/tree/main/mmdetection/configs/visol/final), `v3.py` must be trained and inferred using a seed of **1927851590** and the **NVIDIA RTX 3090** GPU.
 3. `For all other cases` must be trained and inferred using a seed of **378452678** and the **NVIDIA A100** GPU.  
