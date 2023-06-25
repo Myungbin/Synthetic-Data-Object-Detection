@@ -533,7 +533,7 @@ custom_hooks = [dict(type='NumClassCheckHook')]
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 load_from = None
-resume_from = r'C:\MB_Project\project\Competition\VISOL\mmdetection\configs\visol\latest.pth'
+resume_from = None
 workflow = [('train', 1)]
 opencv_num_threads = 0
 mp_start_method = 'fork'
