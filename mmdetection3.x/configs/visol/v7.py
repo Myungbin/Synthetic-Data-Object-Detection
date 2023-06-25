@@ -1,5 +1,5 @@
 # model settings
-randomness = {'seed' : 2023}
+randomness = {'seed': 2023}
 
 model = dict(
     type='CascadeRCNN',

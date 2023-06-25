@@ -35,7 +35,7 @@ Synthetic-Data-Object-Detection
 ## Getting Started
 `Python 3.8.10` `mmdetection 2.x`
 ```
-git clone https://github.com/Myungbin/VISOL.git
+git clone https://github.com/Myungbin/Synthetic-Data-Object-Detection.git
 
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
@@ -53,33 +53,25 @@ The dataset is not included in this repository and needs to be prepared separate
 
 ## Experiment
 The default augmentations used were `Resize`, `Flip`, and `Normalize`.  
-Faster R-CNN, EfficientDet, Swin Transformer, Libra R-CNN, and YOLO were used in the experiment. You can check the other experiments in the "finished_experiments" folder.  
-In the end, `Cascade R-CNN` models was used.
-
-| Model         | Backbone | Depth | Augmentation                                      | Public mAp |
-|---------------|----------|-------|---------------------------------------------------|------------|
-| Cascade R-CNN | SwinT    | -     | Mixup, Cutout                                     | 0.89       |
-| Libra R-CNN   | Resnest  | 200   | Mixup, Cutout, AutoAugment, PhotoMetricDistortion | 0.89       |
-| Faster R-CNN  | ResNeXt  | 101   | Mixup                                             | 0.91     |
-| Faster R-CNN  | ResNeSt  | 200   | Mixup                                             | 0.93     |
-| Faster R-CNN  | ResNeSt  | 101   | Mixup, Cutout                                     | 0.95       |
-| Cascade R-CNN | ResNeSt  | 200   | Mixup, Cutout, AutoAugment, PhotoMetricDistortion | 0.98      |
-| ...           | ...      | ...   | ...                                               | ...        |
-
+Faster R-CNN, EfficientDet, Swin Transformer, Libra R-CNN, and YOLO were used in the experiment. You can check the other experiments in the "finished_experiments" folder. In the end, `Cascade R-CNN` models was used.
 
 #### Ensemble
 `Weighted-Boxes-Fusion` on the results of 8 models.
+
+#### pretrain model
+You can check the pretrained model weights [google drive](https://drive.google.com/drive/folders/1YaCBzoYmnUIbbKk2q81_x9H-RuYfxUxI?usp=sharing)  
 
 ## Result
 Public mAp `0.9964`  Private mAP `0.99403`  
 
 To reproduce the results of a public mAP of 0.9964 and a private mAP of 0.99403, follow these steps  
-1. [cascade-rcnn-resnest200-v5.py](https://github.com/Myungbin/Synthetic-Data-Object-Detection/blob/main/mmdetection3.x/configs/visol/cascade-rcnn-resnest200-v5.py) must be trained and inferred using a seed of **2023** and the **NVIDIA A100** GPU. 
+1. [v7.py](https://github.com/Myungbin/Synthetic-Data-Object-Detection/blob/main/mmdetection3.x/configs/visol/cascade-rcnn-resnest200-v5.py) must be trained and inferred using a seed of **2023** and the **NVIDIA RTX 4090** GPU. 
 Additionally, this file utilizes `mmdetection 3.x`, it should be executed based on the following [document](https://mmdetection.readthedocs.io/en/latest/get_started.html).
-2. In the [final folder](https://github.com/Myungbin/Synthetic-Data-Object-Detection/tree/main/mmdetection/configs/visol/final), `969.py` must be trained and inferred using a seed of **1927851590** and the **NVIDIA RTX 3090** GPU.
+2. In the [final folder](https://github.com/Myungbin/Synthetic-Data-Object-Detection/tree/main/mmdetection/configs/visol/final), `v3.py` must be trained and inferred using a seed of **1927851590** and the **NVIDIA RTX 3090** GPU.
 3. `For all other cases` must be trained and inferred using a seed of **378452678** and the **NVIDIA A100** GPU.  
-4. Finally, You must ensemble the inference results of each model using Weighted-Boxes-Fusion
-
+4. Finally, You must ensemble the inference results of each model using Weighted-Boxes-Fusion. 
+The weights for models v1 to v8 are [0.05, 0.05, 0.05, 0.05, 0.2, 0.2, 0.2, 0.2].
+ 
 You can find detailed information about the experimental results through the PowerPoint presentation.
 
 ## Development Environment

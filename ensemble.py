@@ -17,13 +17,11 @@ csv_files = [os.path.join(folder_path, i) for i in csv_files]
 # 최종 저장되는 앙상블 csv 파일명
 final_saved_name = 'final.csv'
 
-iou_thr = 0.1
+iou_thr = 0.5
 skip_box_thr = 0.0001
 sigma = 0.1
 
-weights = []
-for w in range(len(csv_files)):
-    weights.append(1)
+weights = [0.05, 0.05, 0.05, 0.05, 0.2, 0.2, 0.2, 0.2]
 
 tmp = 'ensemble'
 if not os.path.exists(tmp):
