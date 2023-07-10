@@ -82,7 +82,7 @@ Additionally, this file utilizes `mmdetection 3.x`, it should be executed based 
 4. Finally, You must ensemble the inference results of each model using Weighted-Boxes-Fusion. 
 The weights for models v1 to v8 are [0.05, 0.05, 0.05, 0.05, 0.2, 0.2, 0.2, 0.2].
  
-You can find detailed information about the experimental results through the PowerPoint presentation.
+You can find detailed information about the experimental results through the [PowerPoint presentation](https://github.com/Myungbin/Synthetic-Data-Object-Detection/blob/main/VISOL_presentation.pdf).
 
 ## Development Environment
 ```
